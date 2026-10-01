@@ -4,50 +4,52 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Model Keuangan Trading Kelapa KGN</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#faf8f5;--fg:#1a1815;--fg-mid:#4a4540;--fg-muted:#8a8480;
-  --surface:#f0ede8;--surface-alt:#e6e2dc;
-  --accent:#0d5e3c;--accent-soft:#1a8a58;--accent-bg:#e4f2eb;
-  --border:#d4cec4;--border-light:#e8e4dc;
-  --good:#0d7a3a;--good-bg:#e4f5ec;
-  --warn:#c07020;--warn-bg:#fef5e8;
-  --bad:#b03030;--bad-bg:#fdeced;
+  --bg:#F5F7FA;--fg:#1A2332;--fg-mid:#4A5568;--fg-muted:#8898AA;
+  --surface:#FFFFFF;--surface-alt:#EDF2F7;
+  --accent:#2C6FA0;--accent-soft:#4A90C4;--accent-bg:#E8F0FE;
+  --border:#D2D6DC;--border-light:#E8ECF1;
+  --good:#1E8449;--good-bg:#E8F6EF;
+  --warn:#D4820A;--warn-bg:#FEF5E7;
+  --bad:#B03A2E;--bad-bg:#FDEDEC;
   font-variant-numeric:tabular-nums;
 }
 @media(prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#16140f;--fg:#e0dbd4;--fg-mid:#a09890;--fg-muted:#686058;
-    --surface:#201c16;--surface-alt:#2a2620;
-    --accent:#3aaa68;--accent-soft:#50cc80;--accent-bg:#1a2e22;
-    --border:#3a3428;--border-light:#2e2a22;
-    --good:#50cc80;--good-bg:#1a2e22;
-    --warn:#e8a050;--warn-bg:#2e2818;
-    --bad:#e06060;--bad-bg:#2e1c1c;
+    --bg:#131820;--fg:#E2E8F0;--fg-mid:#A0AEC0;--fg-muted:#5A6577;
+    --surface:#1A2130;--surface-alt:#232D3F;
+    --accent:#5B9BD5;--accent-soft:#7BB3E0;--accent-bg:#1A2A40;
+    --border:#2D3748;--border-light:#232D3F;
+    --good:#48BB78;--good-bg:#1A2E22;
+    --warn:#ECC94B;--warn-bg:#2E2818;
+    --bad:#FC8181;--bad-bg:#2E1C1C;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#16140f;--fg:#e0dbd4;--fg-mid:#a09890;--fg-muted:#686058;
-  --surface:#201c16;--surface-alt:#2a2620;
-  --accent:#3aaa68;--accent-soft:#50cc80;--accent-bg:#1a2e22;
-  --border:#3a3428;--border-light:#2e2a22;
-  --good:#50cc80;--good-bg:#1a2e22;
-  --warn:#e8a050;--warn-bg:#2e2818;
-  --bad:#e06060;--bad-bg:#2e1c1c;
+  --bg:#131820;--fg:#E2E8F0;--fg-mid:#A0AEC0;--fg-muted:#5A6577;
+  --surface:#1A2130;--surface-alt:#232D3F;
+  --accent:#5B9BD5;--accent-soft:#7BB3E0;--accent-bg:#1A2A40;
+  --border:#2D3748;--border-light:#232D3F;
+  --good:#48BB78;--good-bg:#1A2E22;
+  --warn:#ECC94B;--warn-bg:#2E2818;
+  --bad:#FC8181;--bad-bg:#2E1C1C;
   color-scheme:dark;
 }
-body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.55;font-size:14px}
-.wrap{max-width:900px;margin:0 auto;padding:16px 16px 60px}
-h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.55;font-size:14px}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 60px}
+h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:2px;color:var(--accent)}
 .sub{font-size:.78rem;color:var(--fg-muted);margin-bottom:20px;line-height:1.45}
-h2{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
-h3{font-size:.78rem;font-weight:700;color:var(--fg-mid);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+h2{font-size:1.05rem;font-weight:700;letter-spacing:.02em;color:var(--accent);margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+h3{font-size:.82rem;font-weight:700;color:var(--fg-mid);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.kpi{background:var(--surface);border-radius:8px;padding:10px 12px;text-align:center;border:1px solid var(--border-light)}
+.kpi{background:var(--surface);border-radius:8px;padding:10px 12px;text-align:center;border:1px solid var(--border-light);box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .kpi-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--fg-muted);margin-bottom:2px}
 .kpi-val{font-size:1.3rem;font-weight:800;color:var(--accent)}
 .kpi-unit{font-size:.65rem;color:var(--fg-muted);margin-top:1px}
@@ -72,21 +74,22 @@ h3{font-size:.78rem;font-weight:700;color:var(--fg-mid);margin:16px 0 8px;text-t
 .ctrl-row{display:flex;align-items:center;gap:8px}
 .ctrl label{font-size:.72rem;font-weight:600;color:var(--fg-mid)}
 .ctrl .hint{font-size:.62rem;color:var(--fg-muted);line-height:1.3}
-.ctrl input[type=range]{flex:1;accent-color:var(--accent);height:18px}
+.ctrl input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;background:var(--border-light);border-radius:3px;outline:none}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ctrl input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .ctrl .val{min-width:80px;text-align:right;font-size:.82rem;font-weight:700;color:var(--accent)}
 .ctrl input[type=number]{width:110px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--fg);font-size:.82rem;font-weight:600;text-align:right;font-family:inherit}
 .ctrl input[type=number]:focus{outline:2px solid var(--accent);border-color:var(--accent)}
 .advanced{display:none}
-.show-advanced .advanced{display:flex}
 
 /* Tables */
 .tbl-wrap{overflow-x:auto;margin:8px 0 16px}
 table{width:100%;border-collapse:collapse;font-size:.78rem}
 th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--border-light)}
-th{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-muted);font-weight:700;background:var(--surface);position:sticky;top:0}
+th{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-muted);font-weight:700;background:var(--surface-alt);position:sticky;top:0}
 .num{text-align:right}
 td.num{font-weight:600}
-tr.total td{font-weight:700;border-top:2px solid var(--border);background:var(--surface)}
+tr.total td{font-weight:700;border-top:2px solid var(--border);background:var(--surface-alt)}
 tr.sub td{font-weight:600;color:var(--fg-mid)}
 .good-cell{color:var(--good)}
 .bad-cell{color:var(--bad)}
@@ -109,23 +112,21 @@ tr.sub td{font-weight:600;color:var(--fg-mid)}
 .pay-warn{color:var(--bad);font-weight:600}
 
 /* MK Dashboard */
-.mk-gauge{height:24px;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin:8px 0;position:relative}
+.mk-gauge{height:24px;background:var(--surface-alt);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin:8px 0;position:relative}
 .mk-gauge-fill{height:100%;border-radius:12px;transition:width .3s}
-.mk-gauge-marker{position:absolute;top:-2px;width:3px;height:28px;background:var(--fg);border-radius:2px;transform:translateX(-50%)}
 .mk-status{font-size:.82rem;font-weight:600;padding:8px 12px;border-radius:6px;margin:8px 0;line-height:1.5}
 .mk-status.good{background:var(--good-bg);color:var(--good)}
 .mk-status.warn{background:var(--warn-bg);color:var(--warn)}
 .mk-status.bad{background:var(--bad-bg);color:var(--bad)}
-.mk-big{font-size:1.6rem;font-weight:800;text-align:center;margin:8px 0}
 
 /* Narrative */
 .narrative{font-size:.78rem;color:var(--fg-mid);background:var(--surface);border-radius:6px;padding:10px 14px;margin:8px 0;line-height:1.55;border-left:3px solid var(--accent-soft)}
 
 /* Charts */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
-.chart-box{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:12px;min-height:220px}
+.chart-box{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:12px;min-height:220px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .chart-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--fg-muted);margin-bottom:8px}
-svg text{font-family:system-ui,-apple-system,sans-serif}
+svg text{font-family:'Inter',system-ui,-apple-system,sans-serif}
 
 /* Heatmap */
 .hm-cell{font-weight:600;font-size:.72rem}
@@ -175,7 +176,7 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
   <div class="kpi" id="kpi-laba"><div class="kpi-label">Laba / Bulan</div><div class="kpi-val" id="k-laba">-</div><div class="kpi-unit">setelah susut & bad debt</div></div>
   <div class="kpi" id="kpi-margin"><div class="kpi-label">Margin Bersih</div><div class="kpi-val" id="k-margin">-</div><div class="kpi-unit">% dari revenue</div></div>
   <div class="kpi" id="kpi-bep"><div class="kpi-label">BEP Volume</div><div class="kpi-val" id="k-bep">-</div><div class="kpi-unit">ton/hari minimum</div></div>
-  <div class="kpi" id="kpi-payback"><div class="kpi-label">Payback</div><div class="kpi-val" id="k-payback">-</div><div class="kpi-unit">bulan (investasi hangus)</div></div>
+  <div class="kpi" id="kpi-payback"><div class="kpi-label">Payback</div><div class="kpi-val" id="k-payback">-</div><div class="kpi-unit">bulan (investasi tidak kembali)</div></div>
 </div>
 <div class="verdict good" id="verdict">Menghitung...</div>
 
@@ -202,6 +203,7 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
   <div class="ctrl">
     <label>Trip per Hari <span class="hint">Jumlah pengiriman ke pabrik</span></label>
     <div class="ctrl-row"><input type="range" id="s-trip" min="1" max="8" step="1" value="2"><span class="val" id="v-trip">2</span></div>
+    <div class="hint" style="font-weight:700;color:var(--accent);font-size:.75rem" id="v-volume">= 5.000 kg/hari (5,0 ton/hari)</div>
   </div>
   <div class="ctrl">
     <label>Ongkos Angkut per Trip <span class="hint">Rp/trip, termasuk BBM & retribusi</span></label>
@@ -228,8 +230,8 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
     <div class="ctrl-row"><input type="range" id="s-kemas" min="5" max="100" step="5" value="15"><span class="val" id="v-kemas">15</span></div>
   </div>
   <div class="ctrl advanced">
-    <label>Biaya Lain-lain <span class="hint">Rp/kg (pungutan, retribusi, tak terduga)</span></label>
-    <div class="ctrl-row"><input type="range" id="s-lain" min="0" max="300" step="10" value="100"><span class="val" id="v-lain">100</span></div>
+    <label>Biaya Lain-lain <span class="hint">% dari harga beli (pungutan, retribusi, tak terduga)</span></label>
+    <div class="ctrl-row"><input type="range" id="s-lain" min="0" max="10" step="0.5" value="0"><span class="val" id="v-lain">0%</span></div>
   </div>
   <div class="ctrl advanced">
     <label>Volume Bulan 1 <span class="hint">% dari target (ramp-up awal)</span></label>
@@ -256,8 +258,7 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
 </table>
 </div>
 
-<!-- ==================== SECTION: BIAYA TETAP (ADVANCED) ==================== -->
-<div class="advanced" style="display:none" id="sec-biaya">
+<!-- ==================== SECTION: BIAYA TETAP ==================== -->
 <h2>Biaya Tetap Bulanan</h2>
 <div class="controls">
   <div class="ctrl">
@@ -276,11 +277,11 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
     <label>Depresiasi Motor</label>
     <div class="ctrl-row"><input type="number" id="e-depr" value="500000" min="0" max="2000000" step="100000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
   </div>
-  <div class="ctrl">
+  <div class="ctrl advanced">
     <label>Biaya Tambahan per Skala (+5 t/hr)</label>
     <div class="ctrl-row"><input type="number" id="e-skala" value="8800000" min="5000000" max="15000000" step="500000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
   </div>
-  <div class="ctrl">
+  <div class="ctrl advanced">
     <label>Kapasitas SDM per Orang</label>
     <div class="ctrl-row"><input type="number" id="e-kapsdm" value="5000" min="2500" max="10000" step="500"><span style="font-size:.72rem;color:var(--fg-muted)">kg/hari</span></div>
   </div>
@@ -296,7 +297,6 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
   <tr><td>SDM tambahan (jika ada)</td><td class="num" id="c-sdm-extra">-</td></tr>
   <tr class="total"><td>Total Aktual (incl. SDM tambahan)</td><td class="num" id="c-fixed-actual">-</td></tr>
 </tbody></table>
-</div>
 </div>
 
 <!-- ==================== SECTION: SKEMA PEMBAYARAN ==================== -->
@@ -348,13 +348,11 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
   <div class="ctrl-row"><input type="range" id="s-mk" min="20000000" max="500000000" step="5000000" value="100000000"><span class="val" id="v-mk">100.000.000</span></div>
 </div>
 
-<div class="mk-big" id="mk-hari">-</div>
-<p class="note" style="text-align:center;margin-bottom:8px" id="mk-hari-label">Modal kerja cukup untuk X hari operasi</p>
-
 <div class="mk-gauge"><div class="mk-gauge-fill" id="mk-fill" style="width:80%;background:var(--good)"></div></div>
 <div class="mk-status good" id="mk-status">Menghitung...</div>
 
 <!-- Cash Chart -->
+<div class="note" style="font-weight:600;color:var(--accent);margin:8px 0" id="mk-context">Simulasi pada volume 5,0 ton/hari, MK 180 jt, pembayaran Custom</div>
 <div class="chart-box" style="margin:12px 0">
   <div class="chart-title">Simulasi Posisi Kas 30 Hari Kerja</div>
   <svg id="chart-cash" viewBox="0 0 800 280" style="width:100%;height:auto"></svg>
@@ -408,33 +406,67 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
 </div>
 
 <!-- ==================== SECTION: RAB ==================== -->
-<h2>RAB & Investasi Pilot 3 Bulan</h2>
-<div class="controls advanced" id="sec-rab-inputs" style="display:none">
+<h2 id="rab-title">RAB & Investasi Pilot 3 Bulan</h2>
+
+<h3>Detail CAPEX <span style="color:var(--bad);font-size:.6rem;font-weight:600">TIDAK KEMBALI</span></h3>
+<div class="controls">
   <div class="ctrl">
-    <label>CAPEX (motor + izin + peralatan)</label>
-    <div class="ctrl-row"><input type="number" id="e-capex" value="35000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+    <label>Motor operasional</label>
+    <div class="ctrl-row"><input type="number" id="e-cx-motor" value="30000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
   </div>
   <div class="ctrl">
-    <label>Pra-operasional</label>
-    <div class="ctrl-row"><input type="number" id="e-praops" value="117000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+    <label>Perizinan & peralatan pendukung</label>
+    <div class="ctrl-row"><input type="number" id="e-cx-izin" value="5000000" step="500000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
   </div>
   <div class="ctrl">
-    <label>OPEX rutin 3 bulan</label>
-    <div class="ctrl-row"><input type="number" id="e-opex3" value="27900000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+    <label>Peralatan lain</label>
+    <div class="ctrl-row"><input type="number" id="e-cx-alat" value="0" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+</div>
+
+<h3>Detail Pra-Operasional <span style="color:var(--bad);font-size:.6rem;font-weight:600">TIDAK KEMBALI</span></h3>
+<div class="controls">
+  <div class="ctrl">
+    <label>Sewa kantor & mess 1 tahun</label>
+    <div class="ctrl-row"><input type="number" id="e-po-sewa" value="60000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Tiket pesawat PP manajemen</label>
+    <div class="ctrl-row"><input type="number" id="e-po-tiket" value="21000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Uang makan manajemen 2 bln</label>
+    <div class="ctrl-row"><input type="number" id="e-po-makan" value="18000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Transport lokal manajemen 2 bln</label>
+    <div class="ctrl-row"><input type="number" id="e-po-lain" value="18000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+</div>
+
+<h3>OPEX & Parameter Pilot</h3>
+<div class="controls">
+  <div class="ctrl">
+    <label>Durasi Pilot <span class="hint">Bulan operasi yang dianggarkan</span></label>
+    <div class="ctrl-row"><input type="range" id="s-bulan" min="1" max="12" step="1" value="3"><span class="val" id="v-bulan">3 bulan</span></div>
   </div>
   <div class="ctrl">
     <label>Batas Stop-Loss <span class="hint">Berhenti jika rugi kumulatif melebihi ini</span></label>
     <div class="ctrl-row"><input type="number" id="e-stoploss" value="50000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
   </div>
 </div>
+<p class="note">OPEX rutin = Biaya Tetap Bulanan (<strong id="opex-fixed">-</strong>) x <strong id="opex-bulan">3</strong> bulan = <strong id="opex-total">-</strong> (otomatis)</p>
+
+<h3>Ringkasan RAB</h3>
 <div class="tbl-wrap">
 <table>
   <thead><tr><th>Pos</th><th class="num">Rp</th><th class="num">%</th></tr></thead>
   <tbody>
-    <tr><td>CAPEX (motor, izin, peralatan)</td><td class="num" id="r-capex">-</td><td class="num" id="r-capex-p">-</td></tr>
-    <tr><td>Pra-operasional (sewa, tiket, makan, transport)</td><td class="num" id="r-praops">-</td><td class="num" id="r-praops-p">-</td></tr>
-    <tr><td>OPEX rutin 3 bulan</td><td class="num" id="r-opex3">-</td><td class="num" id="r-opex3-p">-</td></tr>
-    <tr><td>Modal kerja trading</td><td class="num" id="r-mk">-</td><td class="num" id="r-mk-p">-</td></tr>
+    <tr><td>CAPEX (motor, perizinan, peralatan) <span style="color:var(--bad);font-size:.65rem;font-weight:600">TIDAK KEMBALI</span></td><td class="num" id="r-capex">-</td><td class="num" id="r-capex-p">-</td></tr>
+    <tr><td>Pra-operasional (sewa, tiket, makan, transport manajemen) <span style="color:var(--bad);font-size:.65rem;font-weight:600">TIDAK KEMBALI</span></td><td class="num" id="r-praops">-</td><td class="num" id="r-praops-p">-</td></tr>
+    <tr class="sub"><td>Subtotal Investasi Tidak Kembali</td><td class="num" id="r-hangus" style="color:var(--bad)">-</td><td class="num" id="r-hangus-p" style="color:var(--bad)">-</td></tr>
+    <tr><td id="r-opex3-label">OPEX rutin 3 bulan</td><td class="num" id="r-opex3">-</td><td class="num" id="r-opex3-p">-</td></tr>
+    <tr><td>Modal kerja trading <span style="color:var(--good);font-size:.65rem;font-weight:600">BISA DITARIK</span></td><td class="num" id="r-mk">-</td><td class="num" id="r-mk-p">-</td></tr>
     <tr class="total"><td>Total RAB</td><td class="num" id="r-total">-</td><td class="num">100%</td></tr>
   </tbody>
 </table>
@@ -444,15 +476,15 @@ svg text{font-family:system-ui,-apple-system,sans-serif}
   <thead><tr><th>Metrik Investasi</th><th class="num">Nilai</th></tr></thead>
   <tbody>
     <tr><td>Laba per bulan (base case)</td><td class="num" id="r-laba">-</td></tr>
-    <tr><td>Payback investasi hangus (CAPEX + Pra-ops)</td><td class="num" id="r-payback1">-</td></tr>
+    <tr><td>Payback investasi tidak kembali (CAPEX + Pra-ops)</td><td class="num" id="r-payback1">-</td></tr>
     <tr><td>Payback total RAB</td><td class="num" id="r-payback2">-</td></tr>
-    <tr><td>ROI pilot 3 bulan</td><td class="num" id="r-roi">-</td></tr>
+    <tr><td id="r-roi-label">ROI pilot 3 bulan</td><td class="num" id="r-roi">-</td></tr>
     <tr><td>Batas stop-loss</td><td class="num" id="r-stoploss">-</td></tr>
   </tbody>
 </table>
 </div>
 
-<p class="note" style="margin-top:20px"><strong>Catatan & Asumsi:</strong> Angka default dari data lapangan Juni 2026 (Paparan Trading Awal KGN). Harga dan biaya dapat berubah. Model ini menghitung pada tingkat bulanan (25 hari kerja). Susut default 0% sesuai Paparan (analisis susut dilakukan terpisah via slider). Piutang tak tertagih default 1%. Investasi hangus = CAPEX + Pra-operasional (modal kerja bisa ditarik kembali). Setiap tambahan 5 ton/hari membutuhkan +1 SDM dan motor.</p>
+<p class="note" style="margin-top:20px"><strong>Catatan & Asumsi:</strong> Angka default dari data lapangan Juni 2026 (Paparan Trading Awal KGN). Harga dan biaya dapat berubah. Model ini menghitung pada tingkat bulanan (25 hari kerja). Susut default 0% sesuai Paparan (analisis susut dilakukan terpisah via slider). Piutang tak tertagih default 1%. Investasi tidak kembali = CAPEX + Pra-operasional (uang yang tidak bisa ditarik jika pilot gagal). Modal kerja bisa ditarik kembali. Setiap tambahan 5 ton/hari membutuhkan +1 SDM dan motor.</p>
 
 </div><!-- .wrap -->
 
@@ -466,9 +498,11 @@ const pct=n=>isFinite(n)?(n*100).toFixed(1)+'%':'-';
 /* ====== DEFAULTS ====== */
 const DEFAULTS={
   's-beli':3000,'s-jual':3750,'s-trip':2,'s-angkut':1000000,'s-susut':0,'s-baddebt':1,
-  's-kapasitas':2500,'s-hari':25,'s-kemas':15,'s-lain':100,'s-rampup':50,'s-mk':100000000,
+  's-kapasitas':2500,'s-hari':25,'s-kemas':15,'s-lain':0,'s-rampup':50,'s-mk':100000000,
   'e-gaji':7000000,'e-ops':2300000,'e-sewa':5000000,'e-depr':500000,'e-skala':8800000,'e-kapsdm':5000,
-  'e-capex':35000000,'e-praops':117000000,'e-opex3':27900000,'e-stoploss':50000000,
+  'e-cx-motor':30000000,'e-cx-izin':5000000,'e-cx-alat':0,
+  'e-po-sewa':60000000,'e-po-tiket':21000000,'e-po-makan':18000000,'e-po-lain':18000000,
+  's-bulan':3,'e-stoploss':50000000,
   'p-pct1':50,'p-day1':0,'p-pct2':50,'p-day2':3,'p-pct3':0,'p-day3':7,'p-pct4':0,'p-day4':14,'p-pct5':0,'p-day5':30
 };
 
@@ -488,9 +522,10 @@ function setMode(m){
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
   $(m==='simpel'?'btn-simpel':'btn-lengkap').classList.add('active');
   const show=m==='lengkap';
-  document.querySelectorAll('.advanced').forEach(el=>{el.style.display=show?'':'none'});
-  if(show){$('sec-biaya').style.display='';$('sec-rab-inputs').style.display='';}
-  else{$('sec-biaya').style.display='none';$('sec-rab-inputs').style.display='none';}
+  document.querySelectorAll('.advanced').forEach(el=>{
+    if(!show){el.style.display='none';return;}
+    el.style.display=el.classList.contains('ctrl')?'flex':'block';
+  });
 }
 
 /* ====== RESET ====== */
@@ -516,11 +551,13 @@ function getParams(){
   const hargaBeli=v('s-beli'),hargaJual=v('s-jual'),tripPerHari=v('s-trip');
   const kapasitasTrip=v('s-kapasitas'),hariKerja=v('s-hari');
   const susut=v('s-susut'),badDebt=v('s-baddebt');
-  const ongkosTrip=v('s-angkut'),biayaKemas=v('s-kemas'),biayaLain=v('s-lain');
+  const ongkosTrip=v('s-angkut'),biayaKemas=v('s-kemas'),biayaLainPct=v('s-lain'),biayaLain=biayaLainPct/100*hargaBeli;
   const rampupPct=v('s-rampup');
   const gajiSDM=v('e-gaji'),operasional=v('e-ops'),sewaMess=v('e-sewa'),deprMotor=v('e-depr');
   const biayaSkalaTambahan=v('e-skala'),kapSDM=v('e-kapsdm');
-  const capex=v('e-capex'),praOps=v('e-praops'),opex3bln=v('e-opex3'),stoploss=v('e-stoploss');
+  const capex=v('e-cx-motor')+v('e-cx-izin')+v('e-cx-alat');
+  const praOps=v('e-po-sewa')+v('e-po-tiket')+v('e-po-makan')+v('e-po-lain');
+  const bulanPilot=v('s-bulan'),stoploss=v('e-stoploss');
   const modalKerja=v('s-mk');
 
   const spread=hargaJual-hargaBeli;
@@ -533,10 +570,10 @@ function getParams(){
   const sdmNeeded=Math.ceil(volPerHari/kapSDM);
   const fixedActual=fixedBase+Math.max(0,sdmNeeded-1)*biayaSkalaTambahan;
   const fixedPerKg=fixedActual/volPerBulan;
-  const susutPerKg=susut/100*hargaBeli;
+  const susutPerKg=susut/100*hargaJual;
   const badDebtPerKg=badDebt/100*hargaJual*(1-susut/100);
   const labaPre=marginKontribusi*volPerBulan-fixedActual;
-  const susutLoss=susut/100*hargaBeli*volPerBulan;
+  const susutLoss=susut/100*hargaJual*volPerBulan;
   const bdLoss=badDebt/100*hargaJual*(1-susut/100)*volPerBulan;
   const labaPost=labaPre-susutLoss-bdLoss;
   const revGross=hargaJual*volPerBulan*(1-susut/100)*(1-badDebt/100);
@@ -544,11 +581,12 @@ function getParams(){
   const effectiveMarginPerKg=marginKontribusi-susutPerKg-badDebtPerKg;
   const bepKgHari=effectiveMarginPerKg>0?fixedActual/(effectiveMarginPerKg*hariKerja):Infinity;
   const bepTonHari=bepKgHari/1000;
+  const opex3bln=fixedActual*bulanPilot;
   const totalRAB=capex+praOps+opex3bln+modalKerja;
   const investasiHangus=capex+praOps;
   const paybackHangus=labaPost>0?investasiHangus/labaPost:Infinity;
   const paybackTotal=labaPost>0?totalRAB/labaPost:Infinity;
-  const roiPilot=totalRAB>0?(labaPost*3)/totalRAB:0;
+  const roiPilot=totalRAB>0?(labaPost*bulanPilot)/totalRAB:0;
   const kasKeluarHarian=(hargaBeli*volPerHari)+(ongkosTrip*tripPerHari)+(biayaKemas*volPerHari)+(biayaLain*volPerHari)+(fixedActual/hariKerja);
   const pendapatanHarian=hargaJual*volPerHari*(1-susut/100)*(1-badDebt/100);
 
@@ -561,7 +599,7 @@ function getParams(){
     susutPerKg,badDebtPerKg,effectiveMarginPerKg,
     labaPre,susutLoss,bdLoss,labaPost,revGross,marginPct,
     bepKgHari,bepTonHari,
-    capex,praOps,opex3bln,modalKerja,stoploss,totalRAB,investasiHangus,
+    capex,praOps,opex3bln,bulanPilot,modalKerja,stoploss,totalRAB,investasiHangus,
     paybackHangus,paybackTotal,roiPilot,
     kasKeluarHarian,pendapatanHarian
   };
@@ -628,7 +666,7 @@ function labaForVol(volHari,p){
   const volBln=volHari*p.hariKerja;
   const fixed=fixedForVol(volHari,p);
   const margin=p.marginKontribusi*volBln-fixed;
-  const sLoss=p.susut/100*p.hargaBeli*volBln;
+  const sLoss=p.susut/100*p.hargaJual*volBln;
   const bLoss=p.badDebt/100*p.hargaJual*(1-p.susut/100)*volBln;
   return margin-sLoss-bLoss;
 }
@@ -647,7 +685,7 @@ function renderKPI(p){
 
   if(p.labaPost>0){
     $('verdict').className='verdict good';
-    $('verdict').textContent='Pada parameter ini, trading menghasilkan laba '+rpS(p.labaPost)+' per bulan. Investasi hangus ('+rpS(p.investasiHangus)+') kembali dalam '+p.paybackHangus.toFixed(1)+' bulan.';
+    $('verdict').textContent='Pada parameter ini, trading menghasilkan laba '+rpS(p.labaPost)+' per bulan. Investasi tidak kembali ('+rpS(p.investasiHangus)+') kembali dalam '+p.paybackHangus.toFixed(1)+' bulan.';
   }else{
     $('verdict').className='verdict bad';
     $('verdict').textContent='Pada parameter ini, trading RUGI '+rpS(Math.abs(p.labaPost))+' per bulan. Naikkan volume, negosiasi harga, atau tekan biaya.';
@@ -730,10 +768,8 @@ function renderPayFooter(profile){
 
 /* ====== RENDER MK DASHBOARD ====== */
 function renderMK(p,sim,mk){
-  const hariOps=p.kasKeluarHarian>0?Math.floor(p.modalKerja/p.kasKeluarHarian):0;
-  $('mk-hari').textContent=hariOps+' hari';
-  $('mk-hari-label').textContent='Modal kerja '+rpS(p.modalKerja)+' cukup untuk '+hariOps+' hari operasi (tanpa pemasukan)';
-
+  const presetName=currentPreset==='tunai'?'Tunai':currentPreset==='3hari'?'Tiap 3 Hari':currentPreset==='2xminggu'?'2x/Minggu':currentPreset==='mingguan'?'Mingguan':'Custom';
+  $('mk-context').textContent='Simulasi pada volume '+(p.volPerHari/1000).toFixed(1)+' ton/hari, MK '+rpS(p.modalKerja)+', pembayaran '+presetName;
   const pct=mk.mkMinBuffer>0?Math.min(p.modalKerja/mk.mkMinBuffer*100,100):100;
   $('mk-fill').style.width=pct+'%';
   $('mk-fill').style.background=mk.status==='good'?'var(--good)':mk.status==='warn'?'var(--warn)':'var(--bad)';
@@ -826,7 +862,7 @@ function renderMKScenarios(p){
     {name:'Bayar tunai (100%/0hr)',pcts:[100,0,0,0,0],days:[0,0,0,0,0]},
     {name:'2x/minggu (50/0 + 50/3)',pcts:[50,50,0,0,0],days:[0,3,0,0,0]},
     {name:'Tiap 3 hari (100%/3hr)',pcts:[0,100,0,0,0],days:[0,3,0,0,0]},
-    {name:'Mingguan (100%/6hr)',pcts:[0,0,100,0,0],days:[0,0,6,0,0]},
+    {name:'Mingguan (100%/7hr)',pcts:[0,0,100,0,0],days:[0,0,7,0,0]},
     {name:'50/0 + 50/14',pcts:[50,0,0,50,0],days:[0,0,0,14,0]},
     {name:'2x/bulan (100%/13hr)',pcts:[0,0,0,100,0],days:[0,0,0,13,0]},
   ];
@@ -863,7 +899,7 @@ function renderMatrix1(p){
       const biayaVar=p.ongkosPerKg+p.biayaKemas+p.biayaLain;
       const margin=sp-biayaVar;
       const fixed=fixedForVol(v,p);
-      const sLoss=p.susut/100*p.hargaBeli*volBln;
+      const sLoss=p.susut/100*p.hargaJual*volBln;
       const bLoss=p.badDebt/100*p.hargaJual*(1-p.susut/100)*volBln;
       const laba=margin*volBln-fixed-sLoss-bLoss;
       const ljt=laba/1e6;
@@ -1039,19 +1075,77 @@ function drawScaleChart(p){
   svg.innerHTML=html;
 }
 
+/* ====== CUMULATIVE CASH CHART ====== */
+function drawCumCash(sim){
+  const svg=$('chart-cumcash');
+  const W=400,H=280,pad={t:20,r:20,b:35,l:60};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const cumData=[];
+  let cumIn=0,cumOut=0;
+  for(const r of sim){cumIn+=r.masuk;cumOut+=r.keluar;cumData.push({d:r.d,cumIn,cumOut,cumNet:cumIn-cumOut});}
+  const allVals=cumData.flatMap(d=>[d.cumIn,d.cumOut]);
+  const yMax=Math.max(...allVals)*1.1||1;
+  const yMin=Math.min(0,...cumData.map(d=>d.cumNet))*1.1;
+  const yRange=yMax-yMin||1;
+  const x=d=>(pad.l+(d-1)/(sim.length-1)*pw);
+  const y=v=>(pad.t+(yMax-v)/yRange*ph);
+
+  let ticks='';
+  const yStep=Math.pow(10,Math.floor(Math.log10(yMax)))/2||1;
+  for(let v=Math.ceil(yMin/yStep)*yStep;v<=yMax;v+=yStep){
+    const yy=y(v);
+    ticks+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${yy}" y2="${yy}" stroke="var(--border-light)" stroke-width="1"/>`;
+    ticks+=`<text x="${pad.l-6}" y="${yy+3}" text-anchor="end" font-size="8" fill="var(--fg-muted)">${rpS(v)}</text>`;
+  }
+  for(let d=1;d<=sim.length;d+=5){
+    ticks+=`<text x="${x(d)}" y="${H-pad.b+16}" text-anchor="middle" font-size="8" fill="var(--fg-muted)">${d}</text>`;
+  }
+
+  let pathIn='M',pathOut='M',pathNet='M';
+  cumData.forEach((d,i)=>{
+    pathIn+=(i?'L':'')+x(d.d).toFixed(1)+','+y(d.cumIn).toFixed(1);
+    pathOut+=(i?'L':'')+x(d.d).toFixed(1)+','+y(d.cumOut).toFixed(1);
+    pathNet+=(i?'L':'')+x(d.d).toFixed(1)+','+y(d.cumNet).toFixed(1);
+  });
+
+  const last=cumData[cumData.length-1];
+  svg.innerHTML=`
+    ${ticks}
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--fg-muted)" stroke-width="1" stroke-dasharray="3,2"/>
+    <path d="${pathOut}" fill="none" stroke="var(--bad)" stroke-width="2" opacity=".7"/>
+    <path d="${pathIn}" fill="none" stroke="var(--good)" stroke-width="2"/>
+    <path d="${pathNet}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+    <circle cx="${x(last.d)}" cy="${y(last.cumIn)}" r="3" fill="var(--good)"/>
+    <text x="${x(last.d)-4}" y="${y(last.cumIn)-6}" text-anchor="end" font-size="8" fill="var(--good)">Masuk ${rpS(last.cumIn)}</text>
+    <circle cx="${x(last.d)}" cy="${y(last.cumOut)}" r="3" fill="var(--bad)"/>
+    <text x="${x(last.d)-4}" y="${y(last.cumOut)+12}" text-anchor="end" font-size="8" fill="var(--bad)">Keluar ${rpS(last.cumOut)}</text>
+    <circle cx="${x(last.d)}" cy="${y(last.cumNet)}" r="3" fill="var(--accent)"/>
+    <text x="${x(last.d)-4}" y="${y(last.cumNet)-6}" text-anchor="end" font-size="8" fill="var(--accent)">Net ${rpS(last.cumNet)}</text>
+    <text x="${W/2}" y="${H-2}" text-anchor="middle" font-size="8" fill="var(--fg-muted)">Hari kerja</text>
+  `;
+}
+
 /* ====== RENDER RAB ====== */
 function renderRAB(p){
   const items=[p.capex,p.praOps,p.opex3bln,p.modalKerja];
   const ids=['r-capex','r-praops','r-opex3','r-mk'];
   const pids=['r-capex-p','r-praops-p','r-opex3-p','r-mk-p'];
   items.forEach((v,i)=>{$(ids[i]).textContent=rpF(v);$(pids[i]).textContent=(v/p.totalRAB*100).toFixed(0)+'%'});
+  $('r-hangus').textContent=rpF(p.investasiHangus);
+  $('r-hangus-p').textContent=(p.investasiHangus/p.totalRAB*100).toFixed(0)+'%';
+  $('r-opex3-label').textContent='OPEX rutin '+p.bulanPilot+' bulan (biaya tetap x '+p.bulanPilot+')';
+  $('rab-title').textContent='RAB & Investasi Pilot '+p.bulanPilot+' Bulan';
   $('r-total').textContent=rpF(p.totalRAB);
   $('r-laba').textContent=rpS(p.labaPost)+'/bln';
   $('r-payback1').textContent=isFinite(p.paybackHangus)?p.paybackHangus.toFixed(1)+' bulan':'n/a';
   $('r-payback2').textContent=isFinite(p.paybackTotal)?p.paybackTotal.toFixed(1)+' bulan':'n/a';
-  $('r-roi').textContent=isFinite(p.roiPilot)?(p.roiPilot*100).toFixed(1)+'%':'n/a';
+  $('r-roi-label').textContent='ROI pilot '+p.bulanPilot+' bulan';
+  $('r-roi').textContent=isFinite(p.roiPilot)?(p.roiPilot*100).toFixed(1)+'% ('+p.bulanPilot+' bln)':'n/a';
   $('r-stoploss').textContent=rpF(p.stoploss);
   $('r-laba').className='num '+(p.labaPost>=0?'good-cell':'bad-cell');
+  $('opex-fixed').textContent=rpS(p.fixedActual);
+  $('opex-bulan').textContent=p.bulanPilot;
+  $('opex-total').textContent=rpS(p.opex3bln);
 }
 
 /* ====== RENDER BIAYA TETAP TABLE ====== */
@@ -1071,15 +1165,18 @@ function syncSliders(){
   $('v-beli').textContent=num($('s-beli').value);
   $('v-jual').textContent=num($('s-jual').value);
   $('v-trip').textContent=$('s-trip').value;
+  const volKg=parseFloat($('s-trip').value)*parseFloat($('s-kapasitas').value);
+  $('v-volume').textContent='= '+num(volKg)+' kg/hari ('+(volKg/1000).toFixed(1)+' ton/hari)';
   $('v-angkut').textContent=num($('s-angkut').value);
   $('v-susut').textContent=$('s-susut').value+'%';
   $('v-baddebt').textContent=$('s-baddebt').value+'%';
   $('v-kapasitas').textContent=num($('s-kapasitas').value);
   $('v-hari').textContent=$('s-hari').value;
   $('v-kemas').textContent=num($('s-kemas').value);
-  $('v-lain').textContent=num($('s-lain').value);
+  $('v-lain').textContent=$('s-lain').value+'%';
   $('v-rampup').textContent=$('s-rampup').value+'%';
   $('v-mk').textContent=num($('s-mk').value);
+  $('v-bulan').textContent=$('s-bulan').value+' bulan';
 }
 
 /* ====== TOGGLE CASH TABLE ====== */
@@ -1112,13 +1209,14 @@ function update(){
   drawTornado(p);
   drawBEP(p);
   drawScaleChart(p);
+  drawCumCash(sim);
   renderRAB(p);
 }
 
 /* ====== EVENT LISTENERS ====== */
-const sliders=['s-beli','s-jual','s-trip','s-angkut','s-susut','s-baddebt','s-kapasitas','s-hari','s-kemas','s-lain','s-rampup','s-mk'];
+const sliders=['s-beli','s-jual','s-trip','s-angkut','s-susut','s-baddebt','s-kapasitas','s-hari','s-kemas','s-lain','s-rampup','s-mk','s-bulan'];
 sliders.forEach(id=>{$(id).addEventListener('input',update)});
-const numbers=['e-gaji','e-ops','e-sewa','e-depr','e-skala','e-kapsdm','e-capex','e-praops','e-opex3','e-stoploss'];
+const numbers=['e-gaji','e-ops','e-sewa','e-depr','e-skala','e-kapsdm','e-cx-motor','e-cx-izin','e-cx-alat','e-po-sewa','e-po-tiket','e-po-makan','e-po-lain','e-stoploss'];
 numbers.forEach(id=>{$(id).addEventListener('input',update)});
 for(let i=1;i<=5;i++){$('p-pct'+i).addEventListener('input',()=>{currentPreset='custom';document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));$('pre-custom').classList.add('active');update()});$('p-day'+i).addEventListener('input',update);}
 
