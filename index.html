@@ -455,7 +455,7 @@ svg text{font-family:'Inter',system-ui,-apple-system,sans-serif}
     <div class="ctrl-row"><input type="number" id="e-stoploss" value="50000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
   </div>
 </div>
-<p class="note">OPEX rutin = Biaya Tetap Bulanan (<strong id="opex-fixed">-</strong>) x <strong id="opex-bulan">3</strong> bulan = <strong id="opex-total">-</strong> (otomatis)</p>
+<p class="note">OPEX rutin = Gaji+Ops Bulanan (<strong id="opex-fixed">-</strong>) x <strong id="opex-bulan">3</strong> bulan = <strong id="opex-total">-</strong> (tidak termasuk sewa &amp; depresiasi)</p>
 
 <h3>Ringkasan RAB</h3>
 <div class="tbl-wrap">
@@ -503,15 +503,15 @@ const DEFAULTS={
   'e-cx-motor':30000000,'e-cx-izin':5000000,'e-cx-alat':0,
   'e-po-sewa':60000000,'e-po-tiket':21000000,'e-po-makan':18000000,'e-po-lain':18000000,
   's-bulan':3,'e-stoploss':50000000,
-  'p-pct1':50,'p-day1':0,'p-pct2':50,'p-day2':3,'p-pct3':0,'p-day3':7,'p-pct4':0,'p-day4':14,'p-pct5':0,'p-day5':30
+  'p-pct1':0,'p-day1':0,'p-pct2':100,'p-day2':3,'p-pct3':0,'p-day3':6,'p-pct4':0,'p-day4':14,'p-pct5':0,'p-day5':30
 };
 
 const PRESETS={
-  tunai:{pcts:[100,0,0,0,0],days:[0,3,7,14,30]},
-  '3hari':{pcts:[0,100,0,0,0],days:[0,3,7,14,30]},
-  '2xminggu':{pcts:[50,50,0,0,0],days:[0,3,7,14,30]},
-  mingguan:{pcts:[0,0,100,0,0],days:[0,3,7,14,30]},
-  custom:{pcts:[50,30,20,0,0],days:[0,3,7,14,30]}
+  tunai:{pcts:[100,0,0,0,0],days:[0,3,6,14,30]},
+  '3hari':{pcts:[0,100,0,0,0],days:[0,3,6,14,30]},
+  '2xminggu':{pcts:[0,100,0,0,0],days:[0,3,6,14,30]},
+  mingguan:{pcts:[0,0,100,0,0],days:[0,3,6,14,30]},
+  custom:{pcts:[50,30,20,0,0],days:[0,3,6,14,30]}
 };
 let currentPreset='2xminggu';
 
@@ -581,10 +581,11 @@ function getParams(){
   const effectiveMarginPerKg=marginKontribusi-susutPerKg-badDebtPerKg;
   const bepKgHari=effectiveMarginPerKg>0?fixedActual/(effectiveMarginPerKg*hariKerja):Infinity;
   const bepTonHari=bepKgHari/1000;
-  const opex3bln=fixedActual*bulanPilot;
-  const totalRAB=capex+praOps+opex3bln+modalKerja;
+  const opexCash=(gajiSDM+operasional+Math.max(0,sdmNeeded-1)*biayaSkalaTambahan)*bulanPilot;
+  const totalRAB=capex+praOps+opexCash+modalKerja;
   const investasiHangus=capex+praOps;
-  const paybackHangus=labaPost>0?investasiHangus/labaPost:Infinity;
+  const investasiAwal=capex+praOps+modalKerja;
+  const paybackHangus=labaPost>0?investasiAwal/labaPost:Infinity;
   const paybackTotal=labaPost>0?totalRAB/labaPost:Infinity;
   const roiPilot=totalRAB>0?(labaPost*bulanPilot)/totalRAB:0;
   const kasKeluarHarian=(hargaBeli*volPerHari)+(ongkosTrip*tripPerHari)+(biayaKemas*volPerHari)+(biayaLain*volPerHari)+(fixedActual/hariKerja);
@@ -599,7 +600,7 @@ function getParams(){
     susutPerKg,badDebtPerKg,effectiveMarginPerKg,
     labaPre,susutLoss,bdLoss,labaPost,revGross,marginPct,
     bepKgHari,bepTonHari,
-    capex,praOps,opex3bln,bulanPilot,modalKerja,stoploss,totalRAB,investasiHangus,
+    capex,praOps,opexCash,bulanPilot,modalKerja,stoploss,totalRAB,investasiHangus,investasiAwal,
     paybackHangus,paybackTotal,roiPilot,
     kasKeluarHarian,pendapatanHarian
   };
@@ -685,7 +686,7 @@ function renderKPI(p){
 
   if(p.labaPost>0){
     $('verdict').className='verdict good';
-    $('verdict').textContent='Pada parameter ini, trading menghasilkan laba '+rpS(p.labaPost)+' per bulan. Investasi tidak kembali ('+rpS(p.investasiHangus)+') kembali dalam '+p.paybackHangus.toFixed(1)+' bulan.';
+    $('verdict').textContent='Pada parameter ini, trading menghasilkan laba '+rpS(p.labaPost)+' per bulan. Investasi awal ('+rpS(p.investasiAwal)+') kembali dalam '+p.paybackHangus.toFixed(1)+' bulan.';
   }else{
     $('verdict').className='verdict bad';
     $('verdict').textContent='Pada parameter ini, trading RUGI '+rpS(Math.abs(p.labaPost))+' per bulan. Naikkan volume, negosiasi harga, atau tekan biaya.';
@@ -860,9 +861,9 @@ function drawCashChart(sim,p){
 function renderMKScenarios(p){
   const scenarios=[
     {name:'Bayar tunai (100%/0hr)',pcts:[100,0,0,0,0],days:[0,0,0,0,0]},
-    {name:'2x/minggu (50/0 + 50/3)',pcts:[50,50,0,0,0],days:[0,3,0,0,0]},
+    {name:'2x/minggu (100%/3hr)',pcts:[0,100,0,0,0],days:[0,3,0,0,0]},
     {name:'Tiap 3 hari (100%/3hr)',pcts:[0,100,0,0,0],days:[0,3,0,0,0]},
-    {name:'Mingguan (100%/7hr)',pcts:[0,0,100,0,0],days:[0,0,7,0,0]},
+    {name:'Mingguan (100%/6hr)',pcts:[0,0,100,0,0],days:[0,0,6,0,0]},
     {name:'50/0 + 50/14',pcts:[50,0,0,50,0],days:[0,0,0,14,0]},
     {name:'2x/bulan (100%/13hr)',pcts:[0,0,0,100,0],days:[0,0,0,13,0]},
   ];
@@ -1127,13 +1128,13 @@ function drawCumCash(sim){
 
 /* ====== RENDER RAB ====== */
 function renderRAB(p){
-  const items=[p.capex,p.praOps,p.opex3bln,p.modalKerja];
+  const items=[p.capex,p.praOps,p.opexCash,p.modalKerja];
   const ids=['r-capex','r-praops','r-opex3','r-mk'];
   const pids=['r-capex-p','r-praops-p','r-opex3-p','r-mk-p'];
   items.forEach((v,i)=>{$(ids[i]).textContent=rpF(v);$(pids[i]).textContent=(v/p.totalRAB*100).toFixed(0)+'%'});
   $('r-hangus').textContent=rpF(p.investasiHangus);
   $('r-hangus-p').textContent=(p.investasiHangus/p.totalRAB*100).toFixed(0)+'%';
-  $('r-opex3-label').textContent='OPEX rutin '+p.bulanPilot+' bulan (biaya tetap x '+p.bulanPilot+')';
+  $('r-opex3-label').textContent='OPEX rutin '+p.bulanPilot+' bulan (gaji+ops x '+p.bulanPilot+')';
   $('rab-title').textContent='RAB & Investasi Pilot '+p.bulanPilot+' Bulan';
   $('r-total').textContent=rpF(p.totalRAB);
   $('r-laba').textContent=rpS(p.labaPost)+'/bln';
@@ -1143,9 +1144,9 @@ function renderRAB(p){
   $('r-roi').textContent=isFinite(p.roiPilot)?(p.roiPilot*100).toFixed(1)+'% ('+p.bulanPilot+' bln)':'n/a';
   $('r-stoploss').textContent=rpF(p.stoploss);
   $('r-laba').className='num '+(p.labaPost>=0?'good-cell':'bad-cell');
-  $('opex-fixed').textContent=rpS(p.fixedActual);
+  $('opex-fixed').textContent=rpS(p.opexCash/p.bulanPilot);
   $('opex-bulan').textContent=p.bulanPilot;
-  $('opex-total').textContent=rpS(p.opex3bln);
+  $('opex-total').textContent=rpS(p.opexCash);
 }
 
 /* ====== RENDER BIAYA TETAP TABLE ====== */
