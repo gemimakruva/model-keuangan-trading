@@ -588,7 +588,7 @@ function getParams(){
   const paybackHangus=labaPost>0?investasiAwal/labaPost:Infinity;
   const paybackTotal=labaPost>0?totalRAB/labaPost:Infinity;
   const roiPilot=totalRAB>0?(labaPost*bulanPilot)/totalRAB:0;
-  const kasKeluarHarian=(hargaBeli*volPerHari)+(ongkosTrip*tripPerHari)+(biayaKemas*volPerHari)+(biayaLain*volPerHari)+(fixedActual/hariKerja);
+  const kasKeluarHarian=(hargaBeli*volPerHari)+(ongkosTrip*tripPerHari)+(biayaKemas*volPerHari)+(biayaLain*volPerHari);
   const pendapatanHarian=hargaJual*volPerHari*(1-susut/100)*(1-badDebt/100);
 
   return{
@@ -628,7 +628,7 @@ function simCash(p,profile,days){
     const volFactor=d<=rampDays?(p.rampupPct/100):1;
     const volHari=p.volPerHari*volFactor;
     const trips=Math.ceil(volHari/p.kapasitasTrip);
-    const keluar=(p.hargaBeli*volHari)+(p.ongkosTrip*trips)+(p.biayaKemas*volHari)+(p.biayaLain*volHari)+(p.fixedActual/p.hariKerja);
+    const keluar=(p.hargaBeli*volHari)+(p.ongkosTrip*trips)+(p.biayaKemas*volHari)+(p.biayaLain*volHari);
     let masuk=0;
     for(const c of profile.conds){
       const srcDay=d-c.day;
