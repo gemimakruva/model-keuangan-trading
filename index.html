@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Model Keuangan Trading Kelapa KGN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf8f5;--fg:#1a1815;--fg-mid:#4a4540;--fg-muted:#8a8480;
+  --surface:#f0ede8;--surface-alt:#e6e2dc;
+  --accent:#0d5e3c;--accent-soft:#1a8a58;--accent-bg:#e4f2eb;
+  --border:#d4cec4;--border-light:#e8e4dc;
+  --good:#0d7a3a;--good-bg:#e4f5ec;
+  --warn:#c07020;--warn-bg:#fef5e8;
+  --bad:#b03030;--bad-bg:#fdeced;
+  font-variant-numeric:tabular-nums;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16140f;--fg:#e0dbd4;--fg-mid:#a09890;--fg-muted:#686058;
+    --surface:#201c16;--surface-alt:#2a2620;
+    --accent:#3aaa68;--accent-soft:#50cc80;--accent-bg:#1a2e22;
+    --border:#3a3428;--border-light:#2e2a22;
+    --good:#50cc80;--good-bg:#1a2e22;
+    --warn:#e8a050;--warn-bg:#2e2818;
+    --bad:#e06060;--bad-bg:#2e1c1c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16140f;--fg:#e0dbd4;--fg-mid:#a09890;--fg-muted:#686058;
+  --surface:#201c16;--surface-alt:#2a2620;
+  --accent:#3aaa68;--accent-soft:#50cc80;--accent-bg:#1a2e22;
+  --border:#3a3428;--border-light:#2e2a22;
+  --good:#50cc80;--good-bg:#1a2e22;
+  --warn:#e8a050;--warn-bg:#2e2818;
+  --bad:#e06060;--bad-bg:#2e1c1c;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.55;font-size:14px}
+.wrap{max-width:900px;margin:0 auto;padding:16px 16px 60px}
+h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.sub{font-size:.78rem;color:var(--fg-muted);margin-bottom:20px;line-height:1.45}
+h2{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+h3{font-size:.78rem;font-weight:700;color:var(--fg-mid);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.kpi{background:var(--surface);border-radius:8px;padding:10px 12px;text-align:center;border:1px solid var(--border-light)}
+.kpi-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--fg-muted);margin-bottom:2px}
+.kpi-val{font-size:1.3rem;font-weight:800;color:var(--accent)}
+.kpi-unit{font-size:.65rem;color:var(--fg-muted);margin-top:1px}
+.kpi.bad .kpi-val{color:var(--bad)}
+.kpi.warn .kpi-val{color:var(--warn)}
+.kpi.good .kpi-val{color:var(--good)}
+
+/* Verdict */
+.verdict{font-size:.82rem;padding:10px 14px;border-radius:6px;margin-bottom:20px;line-height:1.5;font-weight:500}
+.verdict.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good)}
+.verdict.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn)}
+.verdict.bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+
+/* Mode toggle */
+.mode-toggle{display:flex;gap:6px;margin-bottom:16px}
+.mode-btn{padding:5px 14px;border-radius:4px;font-size:.72rem;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-mid);cursor:pointer;text-transform:uppercase;letter-spacing:.04em}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Controls */
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:16px}
+.ctrl{display:flex;flex-direction:column;gap:2px}
+.ctrl-row{display:flex;align-items:center;gap:8px}
+.ctrl label{font-size:.72rem;font-weight:600;color:var(--fg-mid)}
+.ctrl .hint{font-size:.62rem;color:var(--fg-muted);line-height:1.3}
+.ctrl input[type=range]{flex:1;accent-color:var(--accent);height:18px}
+.ctrl .val{min-width:80px;text-align:right;font-size:.82rem;font-weight:700;color:var(--accent)}
+.ctrl input[type=number]{width:110px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--fg);font-size:.82rem;font-weight:600;text-align:right;font-family:inherit}
+.ctrl input[type=number]:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.advanced{display:none}
+.show-advanced .advanced{display:flex}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;margin:8px 0 16px}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--border-light)}
+th{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-muted);font-weight:700;background:var(--surface);position:sticky;top:0}
+.num{text-align:right}
+td.num{font-weight:600}
+tr.total td{font-weight:700;border-top:2px solid var(--border);background:var(--surface)}
+tr.sub td{font-weight:600;color:var(--fg-mid)}
+.good-cell{color:var(--good)}
+.bad-cell{color:var(--bad)}
+.warn-cell{color:var(--warn)}
+
+/* Payment presets */
+.preset-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.preset-btn{padding:6px 12px;border-radius:4px;font-size:.72rem;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-mid);cursor:pointer}
+.preset-btn.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+.preset-btn:hover{border-color:var(--accent)}
+
+/* Payment conditions */
+.pay-grid{display:grid;grid-template-columns:auto 1fr 80px 70px;gap:4px 8px;align-items:center;font-size:.78rem;margin:8px 0}
+.pay-grid .pay-label{font-weight:600;color:var(--accent);font-size:.72rem}
+.pay-grid .pay-desc{color:var(--fg-mid);font-size:.72rem}
+.pay-grid input{width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--fg);font-size:.78rem;text-align:right;font-family:inherit}
+.pay-grid input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.pay-footer{display:flex;justify-content:space-between;font-size:.72rem;color:var(--fg-muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border-light)}
+.pay-footer strong{color:var(--accent)}
+.pay-warn{color:var(--bad);font-weight:600}
+
+/* MK Dashboard */
+.mk-gauge{height:24px;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin:8px 0;position:relative}
+.mk-gauge-fill{height:100%;border-radius:12px;transition:width .3s}
+.mk-gauge-marker{position:absolute;top:-2px;width:3px;height:28px;background:var(--fg);border-radius:2px;transform:translateX(-50%)}
+.mk-status{font-size:.82rem;font-weight:600;padding:8px 12px;border-radius:6px;margin:8px 0;line-height:1.5}
+.mk-status.good{background:var(--good-bg);color:var(--good)}
+.mk-status.warn{background:var(--warn-bg);color:var(--warn)}
+.mk-status.bad{background:var(--bad-bg);color:var(--bad)}
+.mk-big{font-size:1.6rem;font-weight:800;text-align:center;margin:8px 0}
+
+/* Narrative */
+.narrative{font-size:.78rem;color:var(--fg-mid);background:var(--surface);border-radius:6px;padding:10px 14px;margin:8px 0;line-height:1.55;border-left:3px solid var(--accent-soft)}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.chart-box{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:12px;min-height:220px}
+.chart-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--fg-muted);margin-bottom:8px}
+svg text{font-family:system-ui,-apple-system,sans-serif}
+
+/* Heatmap */
+.hm-cell{font-weight:600;font-size:.72rem}
+.hm-bad{background:var(--bad-bg);color:var(--bad)}
+.hm-warn{background:var(--warn-bg);color:var(--warn)}
+.hm-good{background:var(--good-bg);color:var(--good)}
+.hm-great{background:var(--accent-bg);color:var(--accent)}
+.hm-base{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* Cash table */
+.cash-tbl td,.cash-tbl th{padding:4px 6px;font-size:.7rem}
+.cash-toggle{font-size:.72rem;color:var(--accent);cursor:pointer;font-weight:600;margin:4px 0}
+
+/* Responsive */
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .controls{grid-template-columns:1fr}
+  .chart-grid{grid-template-columns:1fr}
+  .pay-grid{grid-template-columns:auto 1fr 60px 50px}
+  h1{font-size:1.2rem}
+}
+
+/* Notes */
+.note{font-size:.72rem;color:var(--fg-muted);margin:6px 0;line-height:1.45}
+.note strong{color:var(--fg-mid)}
+.badge{display:inline-block;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:3px;vertical-align:middle;margin-left:4px}
+.badge-new{background:var(--accent-bg);color:var(--accent)}
+
+/* Reset button */
+.reset-btn{padding:4px 12px;border-radius:4px;font-size:.68rem;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--fg-muted);cursor:pointer}
+.reset-btn:hover{border-color:var(--bad);color:var(--bad)}
+
+/* Collapsible */
+.collapsible{cursor:pointer;user-select:none}
+.collapsible::after{content:' +';font-weight:700;color:var(--accent)}
+.collapsible.open::after{content:' -'}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Model Keuangan Trading Kelapa KGN</h1>
+<p class="sub">Pilot trading kelapa kupas 3 bulan, Sulawesi Utara - PT KGN x CV Wahana Putra Ideas<br>Data lapangan Juni 2026. Semua angka dalam Rupiah kecuali disebut lain.</p>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi" id="kpi-laba"><div class="kpi-label">Laba / Bulan</div><div class="kpi-val" id="k-laba">-</div><div class="kpi-unit">setelah susut & bad debt</div></div>
+  <div class="kpi" id="kpi-margin"><div class="kpi-label">Margin Bersih</div><div class="kpi-val" id="k-margin">-</div><div class="kpi-unit">% dari revenue</div></div>
+  <div class="kpi" id="kpi-bep"><div class="kpi-label">BEP Volume</div><div class="kpi-val" id="k-bep">-</div><div class="kpi-unit">ton/hari minimum</div></div>
+  <div class="kpi" id="kpi-payback"><div class="kpi-label">Payback</div><div class="kpi-val" id="k-payback">-</div><div class="kpi-unit">bulan (investasi hangus)</div></div>
+</div>
+<div class="verdict good" id="verdict">Menghitung...</div>
+
+<!-- Mode Toggle -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btn-simpel" onclick="setMode('simpel')">Simpel</button>
+    <button class="mode-btn" id="btn-lengkap" onclick="setMode('lengkap')">Lengkap</button>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset Default</button>
+</div>
+
+<!-- ==================== SECTION: PARAMETER HARGA & VOLUME ==================== -->
+<h2>Parameter Harga & Volume</h2>
+<div class="controls" id="params-harga">
+  <div class="ctrl">
+    <label>Harga Beli Kelapa <span class="hint">Rp/kg, data lapangan Jun 2026</span></label>
+    <div class="ctrl-row"><input type="range" id="s-beli" min="1000" max="6000" step="100" value="3000"><span class="val" id="v-beli">3.000</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Harga Jual ke Pabrik <span class="hint">Rp/kg, fluktuatif</span></label>
+    <div class="ctrl-row"><input type="range" id="s-jual" min="2000" max="7000" step="50" value="3750"><span class="val" id="v-jual">3.750</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Trip per Hari <span class="hint">Jumlah pengiriman ke pabrik</span></label>
+    <div class="ctrl-row"><input type="range" id="s-trip" min="1" max="8" step="1" value="2"><span class="val" id="v-trip">2</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Ongkos Angkut per Trip <span class="hint">Rp/trip, termasuk BBM & retribusi</span></label>
+    <div class="ctrl-row"><input type="range" id="s-angkut" min="400000" max="2500000" step="50000" value="1000000"><span class="val" id="v-angkut">1.000.000</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Susut / Shrinkage <span class="hint">% kehilangan berat (air, rusak, tolak)</span></label>
+    <div class="ctrl-row"><input type="range" id="s-susut" min="0" max="10" step="0.5" value="0"><span class="val" id="v-susut">0%</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Piutang Tak Tertagih <span class="hint">% gagal bayar dari buyer</span></label>
+    <div class="ctrl-row"><input type="range" id="s-baddebt" min="0" max="5" step="0.5" value="1"><span class="val" id="v-baddebt">1%</span></div>
+  </div>
+  <div class="ctrl advanced">
+    <label>Kapasitas per Trip <span class="hint">kg per muatan truk</span></label>
+    <div class="ctrl-row"><input type="range" id="s-kapasitas" min="1000" max="5000" step="100" value="2500"><span class="val" id="v-kapasitas">2.500</span></div>
+  </div>
+  <div class="ctrl advanced">
+    <label>Hari Kerja per Bulan</label>
+    <div class="ctrl-row"><input type="range" id="s-hari" min="20" max="30" step="1" value="25"><span class="val" id="v-hari">25</span></div>
+  </div>
+  <div class="ctrl advanced">
+    <label>Biaya Kemas & Ikat <span class="hint">Rp/kg (karung, tali)</span></label>
+    <div class="ctrl-row"><input type="range" id="s-kemas" min="5" max="100" step="5" value="15"><span class="val" id="v-kemas">15</span></div>
+  </div>
+  <div class="ctrl advanced">
+    <label>Biaya Lain-lain <span class="hint">Rp/kg (pungutan, retribusi, tak terduga)</span></label>
+    <div class="ctrl-row"><input type="range" id="s-lain" min="0" max="300" step="10" value="100"><span class="val" id="v-lain">100</span></div>
+  </div>
+  <div class="ctrl advanced">
+    <label>Volume Bulan 1 <span class="hint">% dari target (ramp-up awal)</span></label>
+    <div class="ctrl-row"><input type="range" id="s-rampup" min="25" max="100" step="5" value="50"><span class="val" id="v-rampup">50%</span></div>
+  </div>
+</div>
+
+<!-- ==================== SECTION: UNIT ECONOMICS ==================== -->
+<h2>Unit Economics - Biaya per Kg</h2>
+<div class="tbl-wrap">
+<table id="tbl-unit">
+  <thead><tr><th>Komponen</th><th class="num">Rp/kg</th><th>Keterangan</th></tr></thead>
+  <tbody id="unit-body"></tbody>
+</table>
+</div>
+
+<!-- ==================== SECTION: PERBANDINGAN SKALA ==================== -->
+<h2>Perbandingan Skala Volume</h2>
+<p class="note">Setiap tambahan 5 ton/hari membutuhkan +1 SDM dan motor (~Rp 8,8 jt/bln)</p>
+<div class="tbl-wrap">
+<table id="tbl-skala">
+  <thead><tr><th>Metrik</th><th class="num">2,5 t/hr</th><th class="num">5 t/hr</th><th class="num">7,5 t/hr</th><th class="num">10 t/hr</th><th class="num">15 t/hr</th><th class="num">20 t/hr</th></tr></thead>
+  <tbody id="skala-body"></tbody>
+</table>
+</div>
+
+<!-- ==================== SECTION: BIAYA TETAP (ADVANCED) ==================== -->
+<div class="advanced" style="display:none" id="sec-biaya">
+<h2>Biaya Tetap Bulanan</h2>
+<div class="controls">
+  <div class="ctrl">
+    <label>Gaji + Makan SDM (koordinator)</label>
+    <div class="ctrl-row"><input type="number" id="e-gaji" value="7000000" min="3000000" max="15000000" step="500000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Operasional (BBM, servis, internet, listrik)</label>
+    <div class="ctrl-row"><input type="number" id="e-ops" value="2300000" min="500000" max="5000000" step="100000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Sewa Kantor & Mess</label>
+    <div class="ctrl-row"><input type="number" id="e-sewa" value="5000000" min="1000000" max="10000000" step="500000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Depresiasi Motor</label>
+    <div class="ctrl-row"><input type="number" id="e-depr" value="500000" min="0" max="2000000" step="100000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Biaya Tambahan per Skala (+5 t/hr)</label>
+    <div class="ctrl-row"><input type="number" id="e-skala" value="8800000" min="5000000" max="15000000" step="500000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp/bln</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Kapasitas SDM per Orang</label>
+    <div class="ctrl-row"><input type="number" id="e-kapsdm" value="5000" min="2500" max="10000" step="500"><span style="font-size:.72rem;color:var(--fg-muted)">kg/hari</span></div>
+  </div>
+</div>
+<div class="tbl-wrap">
+<table><thead><tr><th>Pos</th><th class="num">Rp/bulan</th></tr></thead>
+<tbody>
+  <tr><td>Gaji + makan SDM</td><td class="num" id="c-gaji">-</td></tr>
+  <tr><td>Operasional</td><td class="num" id="c-ops">-</td></tr>
+  <tr><td>Sewa kantor & mess</td><td class="num" id="c-sewa">-</td></tr>
+  <tr><td>Depresiasi motor</td><td class="num" id="c-depr">-</td></tr>
+  <tr class="total"><td>Total Biaya Tetap</td><td class="num" id="c-fixed">-</td></tr>
+  <tr><td>SDM tambahan (jika ada)</td><td class="num" id="c-sdm-extra">-</td></tr>
+  <tr class="total"><td>Total Aktual (incl. SDM tambahan)</td><td class="num" id="c-fixed-actual">-</td></tr>
+</tbody></table>
+</div>
+</div>
+
+<!-- ==================== SECTION: SKEMA PEMBAYARAN ==================== -->
+<h2>Skema Pembayaran Pabrik <span class="badge badge-new">Baru</span></h2>
+<p class="note">Bagaimana pabrik membayar kelapa yang Anda kirim? Pilih yang paling mendekati, atau atur manual.</p>
+
+<div class="preset-grid">
+  <button class="preset-btn" id="pre-tunai" onclick="applyPreset('tunai')">Bayar Tunai</button>
+  <button class="preset-btn" id="pre-3hari" onclick="applyPreset('3hari')">Tiap 3 Hari</button>
+  <button class="preset-btn active" id="pre-2xminggu" onclick="applyPreset('2xminggu')">2x/Minggu</button>
+  <button class="preset-btn" id="pre-mingguan" onclick="applyPreset('mingguan')">Mingguan</button>
+  <button class="preset-btn" id="pre-custom" onclick="applyPreset('custom')">Custom</button>
+</div>
+
+<div class="pay-grid" id="pay-inputs">
+  <span class="pay-label">K1</span><span class="pay-desc">Dibayar saat kirim</span>
+  <input type="number" id="p-pct1" value="50" min="0" max="100" step="5">
+  <input type="number" id="p-day1" value="0" min="0" max="30" step="1">
+
+  <span class="pay-label">K2</span><span class="pay-desc">Pembayaran kedua</span>
+  <input type="number" id="p-pct2" value="50" min="0" max="100" step="5">
+  <input type="number" id="p-day2" value="3" min="0" max="30" step="1">
+
+  <span class="pay-label">K3</span><span class="pay-desc">Pembayaran ketiga</span>
+  <input type="number" id="p-pct3" value="0" min="0" max="100" step="5">
+  <input type="number" id="p-day3" value="7" min="0" max="30" step="1">
+
+  <span class="pay-label">K4</span><span class="pay-desc" style="color:var(--fg-muted)">Opsional</span>
+  <input type="number" id="p-pct4" value="0" min="0" max="100" step="5">
+  <input type="number" id="p-day4" value="14" min="0" max="30" step="1">
+
+  <span class="pay-label">K5</span><span class="pay-desc" style="color:var(--fg-muted)">Opsional</span>
+  <input type="number" id="p-pct5" value="0" min="0" max="100" step="5">
+  <input type="number" id="p-day5" value="30" min="0" max="30" step="1">
+
+  <span></span><span style="font-size:.62rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.04em">Keterangan</span>
+  <span style="font-size:.62rem;color:var(--fg-muted);text-align:right">% Bayar</span>
+  <span style="font-size:.62rem;color:var(--fg-muted);text-align:right">Hari ke-</span>
+</div>
+<div class="pay-footer">
+  <span>Total: <strong id="pay-total">100%</strong></span>
+  <span>Rata-rata hari tunggu bayar: <strong id="pay-blended">1,5 hari</strong></span>
+</div>
+
+<!-- ==================== SECTION: MODAL KERJA ==================== -->
+<h2>Dashboard Modal Kerja <span class="badge badge-new">Baru</span></h2>
+<div class="ctrl" style="margin-bottom:12px">
+  <label>Modal Kerja Trading <span class="hint">Kas awal untuk pembelian kelapa bergulir</span></label>
+  <div class="ctrl-row"><input type="range" id="s-mk" min="20000000" max="500000000" step="5000000" value="100000000"><span class="val" id="v-mk">100.000.000</span></div>
+</div>
+
+<div class="mk-big" id="mk-hari">-</div>
+<p class="note" style="text-align:center;margin-bottom:8px" id="mk-hari-label">Modal kerja cukup untuk X hari operasi</p>
+
+<div class="mk-gauge"><div class="mk-gauge-fill" id="mk-fill" style="width:80%;background:var(--good)"></div></div>
+<div class="mk-status good" id="mk-status">Menghitung...</div>
+
+<!-- Cash Chart -->
+<div class="chart-box" style="margin:12px 0">
+  <div class="chart-title">Simulasi Posisi Kas 30 Hari Kerja</div>
+  <svg id="chart-cash" viewBox="0 0 800 280" style="width:100%;height:auto"></svg>
+</div>
+<div class="narrative" id="narr-cash">Menghitung simulasi kas...</div>
+
+<!-- Cash Table (collapsible) -->
+<div class="cash-toggle collapsible" id="cash-toggle" onclick="toggleCashTable()">Tabel Detail Kas Harian</div>
+<div class="tbl-wrap" id="cash-tbl-wrap" hidden>
+<table class="cash-tbl">
+  <thead><tr><th>Hari</th><th class="num">Kas Keluar</th><th class="num">Kas Masuk</th><th class="num">Net</th><th class="num">Saldo</th></tr></thead>
+  <tbody id="cash-body"></tbody>
+</table>
+</div>
+
+<!-- MK What-If -->
+<h3>Skenario Modal Kerja vs Pembayaran</h3>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Skenario Pembayaran</th><th class="num">Hari Tunggu</th><th class="num">MK Minimum</th><th class="num">MK + Buffer 20%</th><th>Status MK Anda</th></tr></thead>
+  <tbody id="mk-scenarios"></tbody>
+</table>
+</div>
+
+<!-- ==================== SECTION: SENSITIVITAS ==================== -->
+<h2>Sensitivitas - Spread x Volume</h2>
+<p class="note">Laba per bulan (Rp juta). Warna: <span style="color:var(--bad)">merah</span> = rugi, <span style="color:var(--warn)">kuning</span> = tipis, <span style="color:var(--good)">hijau</span> = untung.</p>
+<div class="tbl-wrap"><table id="tbl-matrix1"><thead id="mx1-head"></thead><tbody id="mx1-body"></tbody></table></div>
+
+<h2>Sensitivitas - Ongkos Angkut x Susut</h2>
+<div class="tbl-wrap"><table id="tbl-matrix2"><thead id="mx2-head"></thead><tbody id="mx2-body"></tbody></table></div>
+
+<!-- Charts -->
+<div class="chart-grid">
+  <div class="chart-box">
+    <div class="chart-title">Tornado - Sensitivitas Parameter terhadap Laba</div>
+    <svg id="chart-tornado" viewBox="0 0 400 280" style="width:100%;height:auto"></svg>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Break-Even - Volume vs Laba</div>
+    <svg id="chart-bep" viewBox="0 0 400 280" style="width:100%;height:auto"></svg>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Skala Ekonomi - Laba & Margin per Volume</div>
+    <svg id="chart-scale" viewBox="0 0 400 280" style="width:100%;height:auto"></svg>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Arus Kas Kumulatif 30 Hari</div>
+    <svg id="chart-cumcash" viewBox="0 0 400 280" style="width:100%;height:auto"></svg>
+  </div>
+</div>
+
+<!-- ==================== SECTION: RAB ==================== -->
+<h2>RAB & Investasi Pilot 3 Bulan</h2>
+<div class="controls advanced" id="sec-rab-inputs" style="display:none">
+  <div class="ctrl">
+    <label>CAPEX (motor + izin + peralatan)</label>
+    <div class="ctrl-row"><input type="number" id="e-capex" value="35000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Pra-operasional</label>
+    <div class="ctrl-row"><input type="number" id="e-praops" value="117000000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>OPEX rutin 3 bulan</label>
+    <div class="ctrl-row"><input type="number" id="e-opex3" value="27900000" step="1000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+  <div class="ctrl">
+    <label>Batas Stop-Loss <span class="hint">Berhenti jika rugi kumulatif melebihi ini</span></label>
+    <div class="ctrl-row"><input type="number" id="e-stoploss" value="50000000" step="5000000"><span style="font-size:.72rem;color:var(--fg-muted)">Rp</span></div>
+  </div>
+</div>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Pos</th><th class="num">Rp</th><th class="num">%</th></tr></thead>
+  <tbody>
+    <tr><td>CAPEX (motor, izin, peralatan)</td><td class="num" id="r-capex">-</td><td class="num" id="r-capex-p">-</td></tr>
+    <tr><td>Pra-operasional (sewa, tiket, makan, transport)</td><td class="num" id="r-praops">-</td><td class="num" id="r-praops-p">-</td></tr>
+    <tr><td>OPEX rutin 3 bulan</td><td class="num" id="r-opex3">-</td><td class="num" id="r-opex3-p">-</td></tr>
+    <tr><td>Modal kerja trading</td><td class="num" id="r-mk">-</td><td class="num" id="r-mk-p">-</td></tr>
+    <tr class="total"><td>Total RAB</td><td class="num" id="r-total">-</td><td class="num">100%</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Metrik Investasi</th><th class="num">Nilai</th></tr></thead>
+  <tbody>
+    <tr><td>Laba per bulan (base case)</td><td class="num" id="r-laba">-</td></tr>
+    <tr><td>Payback investasi hangus (CAPEX + Pra-ops)</td><td class="num" id="r-payback1">-</td></tr>
+    <tr><td>Payback total RAB</td><td class="num" id="r-payback2">-</td></tr>
+    <tr><td>ROI pilot 3 bulan</td><td class="num" id="r-roi">-</td></tr>
+    <tr><td>Batas stop-loss</td><td class="num" id="r-stoploss">-</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="note" style="margin-top:20px"><strong>Catatan & Asumsi:</strong> Angka default dari data lapangan Juni 2026 (Paparan Trading Awal KGN). Harga dan biaya dapat berubah. Model ini menghitung pada tingkat bulanan (25 hari kerja). Susut default 0% sesuai Paparan (analisis susut dilakukan terpisah via slider). Piutang tak tertagih default 1%. Investasi hangus = CAPEX + Pra-operasional (modal kerja bisa ditarik kembali). Setiap tambahan 5 ton/hari membutuhkan +1 SDM dan motor.</p>
+
+</div><!-- .wrap -->
+
+<script>
+const $=id=>document.getElementById(id);
+const rpF=n=>{if(!isFinite(n))return'-';return Math.round(n).toLocaleString('id-ID')};
+const rpS=n=>{if(!isFinite(n))return'-';const a=Math.abs(n);if(a>=1e9)return(n/1e9).toFixed(1)+' M';if(a>=1e6)return(n/1e6).toFixed(1)+' jt';if(a>=1e3)return(n/1e3).toFixed(0)+' rb';return Math.round(n).toString()};
+const num=n=>Math.round(n).toLocaleString('id-ID');
+const pct=n=>isFinite(n)?(n*100).toFixed(1)+'%':'-';
+
+/* ====== DEFAULTS ====== */
+const DEFAULTS={
+  's-beli':3000,'s-jual':3750,'s-trip':2,'s-angkut':1000000,'s-susut':0,'s-baddebt':1,
+  's-kapasitas':2500,'s-hari':25,'s-kemas':15,'s-lain':100,'s-rampup':50,'s-mk':100000000,
+  'e-gaji':7000000,'e-ops':2300000,'e-sewa':5000000,'e-depr':500000,'e-skala':8800000,'e-kapsdm':5000,
+  'e-capex':35000000,'e-praops':117000000,'e-opex3':27900000,'e-stoploss':50000000,
+  'p-pct1':50,'p-day1':0,'p-pct2':50,'p-day2':3,'p-pct3':0,'p-day3':7,'p-pct4':0,'p-day4':14,'p-pct5':0,'p-day5':30
+};
+
+const PRESETS={
+  tunai:{pcts:[100,0,0,0,0],days:[0,3,7,14,30]},
+  '3hari':{pcts:[0,100,0,0,0],days:[0,3,7,14,30]},
+  '2xminggu':{pcts:[50,50,0,0,0],days:[0,3,7,14,30]},
+  mingguan:{pcts:[0,0,100,0,0],days:[0,3,7,14,30]},
+  custom:{pcts:[50,30,20,0,0],days:[0,3,7,14,30]}
+};
+let currentPreset='2xminggu';
+
+/* ====== MODE ====== */
+let mode='simpel';
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  $(m==='simpel'?'btn-simpel':'btn-lengkap').classList.add('active');
+  const show=m==='lengkap';
+  document.querySelectorAll('.advanced').forEach(el=>{el.style.display=show?'':'none'});
+  if(show){$('sec-biaya').style.display='';$('sec-rab-inputs').style.display='';}
+  else{$('sec-biaya').style.display='none';$('sec-rab-inputs').style.display='none';}
+}
+
+/* ====== RESET ====== */
+function resetAll(){
+  Object.entries(DEFAULTS).forEach(([id,v])=>{const el=$(id);if(el)el.value=v});
+  applyPreset('2xminggu');
+  update();
+}
+
+/* ====== PRESETS ====== */
+function applyPreset(name){
+  currentPreset=name;
+  const p=PRESETS[name];
+  for(let i=1;i<=5;i++){$('p-pct'+i).value=p.pcts[i-1];$('p-day'+i).value=p.days[i-1];}
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  const btn=$('pre-'+name);if(btn)btn.classList.add('active');
+  update();
+}
+
+/* ====== GET PARAMS ====== */
+function getParams(){
+  const v=id=>{const el=$(id);return parseFloat(el.value)||0};
+  const hargaBeli=v('s-beli'),hargaJual=v('s-jual'),tripPerHari=v('s-trip');
+  const kapasitasTrip=v('s-kapasitas'),hariKerja=v('s-hari');
+  const susut=v('s-susut'),badDebt=v('s-baddebt');
+  const ongkosTrip=v('s-angkut'),biayaKemas=v('s-kemas'),biayaLain=v('s-lain');
+  const rampupPct=v('s-rampup');
+  const gajiSDM=v('e-gaji'),operasional=v('e-ops'),sewaMess=v('e-sewa'),deprMotor=v('e-depr');
+  const biayaSkalaTambahan=v('e-skala'),kapSDM=v('e-kapsdm');
+  const capex=v('e-capex'),praOps=v('e-praops'),opex3bln=v('e-opex3'),stoploss=v('e-stoploss');
+  const modalKerja=v('s-mk');
+
+  const spread=hargaJual-hargaBeli;
+  const ongkosPerKg=ongkosTrip/kapasitasTrip;
+  const biayaVarPerKg=ongkosPerKg+biayaKemas+biayaLain;
+  const marginKontribusi=spread-biayaVarPerKg;
+  const volPerHari=kapasitasTrip*tripPerHari;
+  const volPerBulan=volPerHari*hariKerja;
+  const fixedBase=gajiSDM+operasional+sewaMess+deprMotor;
+  const sdmNeeded=Math.ceil(volPerHari/kapSDM);
+  const fixedActual=fixedBase+Math.max(0,sdmNeeded-1)*biayaSkalaTambahan;
+  const fixedPerKg=fixedActual/volPerBulan;
+  const susutPerKg=susut/100*hargaBeli;
+  const badDebtPerKg=badDebt/100*hargaJual*(1-susut/100);
+  const labaPre=marginKontribusi*volPerBulan-fixedActual;
+  const susutLoss=susut/100*hargaBeli*volPerBulan;
+  const bdLoss=badDebt/100*hargaJual*(1-susut/100)*volPerBulan;
+  const labaPost=labaPre-susutLoss-bdLoss;
+  const revGross=hargaJual*volPerBulan*(1-susut/100)*(1-badDebt/100);
+  const marginPct=revGross>0?labaPost/revGross:0;
+  const effectiveMarginPerKg=marginKontribusi-susutPerKg-badDebtPerKg;
+  const bepKgHari=effectiveMarginPerKg>0?fixedActual/(effectiveMarginPerKg*hariKerja):Infinity;
+  const bepTonHari=bepKgHari/1000;
+  const totalRAB=capex+praOps+opex3bln+modalKerja;
+  const investasiHangus=capex+praOps;
+  const paybackHangus=labaPost>0?investasiHangus/labaPost:Infinity;
+  const paybackTotal=labaPost>0?totalRAB/labaPost:Infinity;
+  const roiPilot=totalRAB>0?(labaPost*3)/totalRAB:0;
+  const kasKeluarHarian=(hargaBeli*volPerHari)+(ongkosTrip*tripPerHari)+(biayaKemas*volPerHari)+(biayaLain*volPerHari)+(fixedActual/hariKerja);
+  const pendapatanHarian=hargaJual*volPerHari*(1-susut/100)*(1-badDebt/100);
+
+  return{
+    hargaBeli,hargaJual,spread,tripPerHari,kapasitasTrip,hariKerja,
+    susut,badDebt,ongkosTrip,ongkosPerKg,biayaKemas,biayaLain,biayaVarPerKg,
+    marginKontribusi,volPerHari,volPerBulan,rampupPct,
+    gajiSDM,operasional,sewaMess,deprMotor,biayaSkalaTambahan,kapSDM,
+    fixedBase,sdmNeeded,fixedActual,fixedPerKg,
+    susutPerKg,badDebtPerKg,effectiveMarginPerKg,
+    labaPre,susutLoss,bdLoss,labaPost,revGross,marginPct,
+    bepKgHari,bepTonHari,
+    capex,praOps,opex3bln,modalKerja,stoploss,totalRAB,investasiHangus,
+    paybackHangus,paybackTotal,roiPilot,
+    kasKeluarHarian,pendapatanHarian
+  };
+}
+
+/* ====== PAYMENT PROFILE ====== */
+function getPayProfile(){
+  const conds=[];
+  for(let i=1;i<=5;i++){
+    const pct=parseFloat($('p-pct'+i).value)||0;
+    const day=parseFloat($('p-day'+i).value)||0;
+    if(pct>0) conds.push({pct,day});
+  }
+  const totalPct=conds.reduce((s,c)=>s+c.pct,0);
+  const blended=totalPct>0?conds.reduce((s,c)=>s+c.pct*c.day,0)/totalPct:0;
+  return{conds,totalPct,blended};
+}
+
+/* ====== CASH SIMULATION ====== */
+function simCash(p,profile,days){
+  const result=[];
+  let saldo=p.modalKerja;
+  const rampDays=Math.round(days*0.5);
+  for(let d=1;d<=days;d++){
+    const volFactor=d<=rampDays?(p.rampupPct/100):1;
+    const volHari=p.volPerHari*volFactor;
+    const trips=Math.ceil(volHari/p.kapasitasTrip);
+    const keluar=(p.hargaBeli*volHari)+(p.ongkosTrip*trips)+(p.biayaKemas*volHari)+(p.biayaLain*volHari)+(p.fixedActual/p.hariKerja);
+    let masuk=0;
+    for(const c of profile.conds){
+      const srcDay=d-c.day;
+      if(srcDay>=1){
+        const srcVol=srcDay<=rampDays?(p.rampupPct/100):1;
+        const srcPend=p.hargaJual*p.volPerHari*srcVol*(1-p.susut/100)*(1-p.badDebt/100);
+        masuk+=c.pct/100*srcPend;
+      }
+    }
+    const net=masuk-keluar;
+    saldo+=net;
+    result.push({d,keluar,masuk,net,saldo});
+  }
+  return result;
+}
+
+/* ====== CALC MK MINIMUM ====== */
+function calcMK(sim,modalKerja){
+  let minSaldo=Infinity,minDay=0;
+  for(const r of sim){if(r.saldo<minSaldo){minSaldo=r.saldo;minDay=r.d;}}
+  const deficit=modalKerja-minSaldo;
+  const mkMin=deficit;
+  const mkMinBuffer=Math.round(mkMin*1.2);
+  const status=modalKerja>=mkMinBuffer?'good':modalKerja>=mkMin?'warn':'bad';
+  return{minSaldo,minDay,mkMin,mkMinBuffer,status,deficit};
+}
+
+/* ====== FIXED COST FOR VOLUME ====== */
+function fixedForVol(volHari,p){
+  const sdm=Math.ceil(volHari/p.kapSDM);
+  return p.fixedBase+Math.max(0,sdm-1)*p.biayaSkalaTambahan;
+}
+
+/* ====== LABA FOR VOLUME ====== */
+function labaForVol(volHari,p){
+  const volBln=volHari*p.hariKerja;
+  const fixed=fixedForVol(volHari,p);
+  const margin=p.marginKontribusi*volBln-fixed;
+  const sLoss=p.susut/100*p.hargaBeli*volBln;
+  const bLoss=p.badDebt/100*p.hargaJual*(1-p.susut/100)*volBln;
+  return margin-sLoss-bLoss;
+}
+
+/* ====== RENDER KPI ====== */
+function renderKPI(p){
+  $('k-laba').textContent=rpS(p.labaPost)+'/bln';
+  $('kpi-laba').className='kpi '+(p.labaPost>0?'good':'bad');
+  $('k-margin').textContent=(p.marginPct*100).toFixed(1)+'%';
+  $('kpi-margin').className='kpi '+(p.marginPct>0.05?'good':p.marginPct>0?'warn':'bad');
+  $('k-bep').textContent=isFinite(p.bepTonHari)?p.bepTonHari.toFixed(1)+' t':'n/a';
+  const volT=p.volPerHari/1000;
+  $('kpi-bep').className='kpi '+(volT>p.bepTonHari*1.3?'good':volT>p.bepTonHari?'warn':'bad');
+  $('k-payback').textContent=isFinite(p.paybackHangus)?p.paybackHangus.toFixed(1)+' bln':'n/a';
+  $('kpi-payback').className='kpi '+(p.paybackHangus<12?'good':p.paybackHangus<24?'warn':'bad');
+
+  if(p.labaPost>0){
+    $('verdict').className='verdict good';
+    $('verdict').textContent='Pada parameter ini, trading menghasilkan laba '+rpS(p.labaPost)+' per bulan. Investasi hangus ('+rpS(p.investasiHangus)+') kembali dalam '+p.paybackHangus.toFixed(1)+' bulan.';
+  }else{
+    $('verdict').className='verdict bad';
+    $('verdict').textContent='Pada parameter ini, trading RUGI '+rpS(Math.abs(p.labaPost))+' per bulan. Naikkan volume, negosiasi harga, atau tekan biaya.';
+  }
+}
+
+/* ====== RENDER UNIT ECONOMICS ====== */
+function renderUnit(p){
+  const rows=[
+    ['Harga beli kelapa kupas',p.hargaBeli,'Data lapangan'],
+    ['Ongkos angkut per kg',p.ongkosPerKg,rpF(p.ongkosTrip)+'/trip : '+num(p.kapasitasTrip)+' kg'],
+    ['Biaya kemas & ikat',p.biayaKemas,'Karung, tali'],
+    ['Biaya lain-lain',p.biayaLain,'Pungutan, retribusi, tak terduga'],
+    ['sub:Total biaya variabel',p.biayaVarPerKg+p.hargaBeli,''],
+    ['Harga jual ke pabrik',p.hargaJual,'Fluktuatif'],
+    ['sub:Margin kontribusi',p.marginKontribusi,((p.marginKontribusi/p.hargaJual)*100).toFixed(1)+'% dari harga jual'],
+    ['Biaya tetap per kg',p.fixedPerKg,rpF(p.fixedActual)+'/bln : '+num(p.volPerBulan)+' kg'],
+    ['Susut per kg',p.susutPerKg,p.susut+'% x '+rpF(p.hargaBeli)],
+    ['Bad debt per kg',p.badDebtPerKg,p.badDebt+'% x '+rpF(p.hargaJual)],
+    ['total:Laba bersih per kg',p.effectiveMarginPerKg-p.fixedPerKg,''],
+  ];
+  let html='';
+  for(const r of rows){
+    const isSub=r[0].startsWith('sub:');
+    const isTotal=r[0].startsWith('total:');
+    const name=r[0].replace(/^(sub|total):/,'');
+    const cls=isTotal?'total':isSub?'sub':'';
+    const valCls=isTotal?(r[1]>=0?'good-cell':'bad-cell'):'';
+    html+=`<tr class="${cls}"><td>${name}</td><td class="num ${valCls}">${rpF(Math.round(r[1]))}</td><td class="note">${r[2]}</td></tr>`;
+  }
+  $('unit-body').innerHTML=html;
+}
+
+/* ====== RENDER SCALE TABLE ====== */
+function renderScale(p){
+  const vols=[2500,5000,7500,10000,15000,20000];
+  const metrics=['Trip/hari','SDM','Biaya tetap/bln','Biaya tetap/kg','Laba/bulan','Margin bersih/kg','MK minimum','Payback (bln)'];
+  let html='';
+  for(let m=0;m<metrics.length;m++){
+    html+='<tr><td>'+metrics[m]+'</td>';
+    for(const v of vols){
+      const trips=Math.ceil(v/p.kapasitasTrip);
+      const sdm=Math.ceil(v/p.kapSDM);
+      const fixed=fixedForVol(v,p);
+      const laba=labaForVol(v,p);
+      const fPerKg=fixed/(v*p.hariKerja);
+      const effMargin=p.marginKontribusi-(p.susut/100*p.hargaBeli)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
+      const marginBersih=effMargin-fPerKg;
+      const kasKelHari=(p.hargaBeli*v)+(p.ongkosTrip*trips)+(p.biayaKemas*v)+(p.biayaLain*v)+(fixed/p.hariKerja);
+      const mkMin=Math.round(kasKelHari*4);
+      const pb=laba>0?p.investasiHangus/laba:Infinity;
+      const isActive=v===p.volPerHari;
+      const style=isActive?' style="background:var(--accent-bg);font-weight:700"':'';
+      let val;
+      switch(m){
+        case 0:val=trips;break;
+        case 1:val=sdm;break;
+        case 2:val=rpS(fixed);break;
+        case 3:val=rpF(Math.round(fPerKg));break;
+        case 4:val=rpS(laba);break;
+        case 5:val=rpF(Math.round(marginBersih));break;
+        case 6:val='~'+rpS(mkMin);break;
+        case 7:val=isFinite(pb)?pb.toFixed(1):'n/a';break;
+      }
+      const cls=m===4?(laba>0?'good-cell':'bad-cell'):m===5?(marginBersih>0?'good-cell':'bad-cell'):'';
+      html+=`<td class="num ${cls}"${style}>${val}</td>`;
+    }
+    html+='</tr>';
+  }
+  $('skala-body').innerHTML=html;
+}
+
+/* ====== RENDER PAYMENT FOOTER ====== */
+function renderPayFooter(profile){
+  const totalEl=$('pay-total');
+  totalEl.textContent=profile.totalPct+'%';
+  if(profile.totalPct!==100)totalEl.className='pay-warn';else totalEl.className='';
+  $('pay-blended').textContent=profile.blended.toFixed(1)+' hari';
+}
+
+/* ====== RENDER MK DASHBOARD ====== */
+function renderMK(p,sim,mk){
+  const hariOps=p.kasKeluarHarian>0?Math.floor(p.modalKerja/p.kasKeluarHarian):0;
+  $('mk-hari').textContent=hariOps+' hari';
+  $('mk-hari-label').textContent='Modal kerja '+rpS(p.modalKerja)+' cukup untuk '+hariOps+' hari operasi (tanpa pemasukan)';
+
+  const pct=mk.mkMinBuffer>0?Math.min(p.modalKerja/mk.mkMinBuffer*100,100):100;
+  $('mk-fill').style.width=pct+'%';
+  $('mk-fill').style.background=mk.status==='good'?'var(--good)':mk.status==='warn'?'var(--warn)':'var(--bad)';
+
+  const s=$('mk-status');
+  if(mk.status==='good'){
+    const buffer=mk.mkMinBuffer>0?Math.round((p.modalKerja/mk.mkMinBuffer-1)*100):0;
+    s.className='mk-status good';
+    s.textContent='Modal kerja '+rpS(p.modalKerja)+' CUKUP. Saldo terendah '+rpS(mk.minSaldo)+' (hari ke-'+mk.minDay+'). Buffer '+buffer+'%.';
+  }else if(mk.status==='warn'){
+    s.className='mk-status warn';
+    s.textContent='Modal kerja '+rpS(p.modalKerja)+' KETAT. Saldo terendah '+rpS(mk.minSaldo)+' (hari ke-'+mk.minDay+'). Rekomendasi: '+rpS(mk.mkMinBuffer)+'.';
+  }else{
+    s.className='mk-status bad';
+    s.textContent='Modal kerja '+rpS(p.modalKerja)+' TIDAK CUKUP. Kas habis di hari ke-'+mk.minDay+'. Defisit '+rpS(Math.abs(mk.minSaldo))+'. Rekomendasi minimum: '+rpS(mk.mkMinBuffer)+'.';
+  }
+}
+
+/* ====== RENDER CASH NARRATIVE ====== */
+function renderCashNarr(p,sim,mk){
+  const steadyNet=sim.length>10?sim[sim.length-1].net:0;
+  let txt='';
+  txt+='Kas terendah terjadi di hari ke-'+mk.minDay+' sebesar '+rpS(mk.minSaldo)+'. ';
+  if(steadyNet>0)txt+='Setelah semua pembayaran berjalan, kas naik ~'+rpS(steadyNet)+' per hari. ';
+  else txt+='Arus kas harian masih negatif di akhir simulasi. ';
+  if(mk.status==='good')txt+='Dengan modal kerja '+rpS(p.modalKerja)+', operasi ini aman.';
+  else if(mk.status==='warn')txt+='Modal kerja cukup tapi sangat ketat, tidak ada ruang untuk keterlambatan.';
+  else txt+='Modal kerja tidak cukup. Operasi akan berhenti sebelum pembayaran masuk.';
+  $('narr-cash').textContent=txt;
+}
+
+/* ====== RENDER CASH TABLE ====== */
+function renderCashTbl(sim){
+  let html='';
+  for(const r of sim){
+    const cls=r.saldo<0?'bad-cell':r.net<0?'warn-cell':'';
+    html+=`<tr><td class="num">${r.d}</td><td class="num">${rpS(-r.keluar)}</td><td class="num">${rpS(r.masuk)}</td><td class="num ${r.net<0?'bad-cell':'good-cell'}">${rpS(r.net)}</td><td class="num ${cls}">${rpS(r.saldo)}</td></tr>`;
+  }
+  $('cash-body').innerHTML=html;
+}
+
+/* ====== RENDER CASH CHART ====== */
+function drawCashChart(sim,p){
+  const svg=$('chart-cash');
+  const W=800,H=280,pad={t:20,r:20,b:40,l:70};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const vals=sim.map(r=>r.saldo);
+  const yMax=Math.max(...vals,p.modalKerja)*1.1;
+  const yMin=Math.min(...vals,0)*1.1||(-yMax*0.1);
+  const yRange=yMax-yMin;
+  const x=d=>(pad.l+(d-1)/(sim.length-1)*pw);
+  const y=v=>(pad.t+(yMax-v)/yRange*ph);
+
+  let path='M';
+  sim.forEach((r,i)=>{path+=(i?'L':'')+x(r.d).toFixed(1)+','+y(r.saldo).toFixed(1)});
+  const areaPath=path+'L'+x(sim[sim.length-1].d)+','+y(0)+'L'+x(1)+','+y(0)+'Z';
+
+  let ticks='';
+  const yStep=Math.pow(10,Math.floor(Math.log10(Math.max(Math.abs(yMax),Math.abs(yMin)))))/2||1;
+  for(let v=Math.ceil(yMin/yStep)*yStep;v<=yMax;v+=yStep){
+    const yy=y(v);
+    ticks+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${yy}" y2="${yy}" stroke="var(--border-light)" stroke-width="1"/>`;
+    ticks+=`<text x="${pad.l-8}" y="${yy+4}" text-anchor="end" font-size="9" fill="var(--fg-muted)">${rpS(v)}</text>`;
+  }
+  for(let d=1;d<=sim.length;d+=5){
+    ticks+=`<text x="${x(d)}" y="${H-pad.b+20}" text-anchor="middle" font-size="9" fill="var(--fg-muted)">${d}</text>`;
+  }
+
+  const mkY=y(p.modalKerja);
+  const zeroY=y(0);
+  const slY=y(p.modalKerja-p.stoploss);
+
+  svg.innerHTML=`
+    ${ticks}
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${zeroY}" y2="${zeroY}" stroke="var(--fg-muted)" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${mkY}" y2="${mkY}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    ${p.stoploss>0&&slY<H-pad.b?`<line x1="${pad.l}" x2="${W-pad.r}" y1="${slY}" y2="${slY}" stroke="var(--bad)" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    <text x="${W-pad.r}" y="${slY-4}" text-anchor="end" font-size="8" fill="var(--bad)">Stop-loss</text>`:''}
+    <path d="${areaPath}" fill="var(--accent-bg)" opacity=".4"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    ${sim.map(r=>`<circle cx="${x(r.d)}" cy="${y(r.saldo)}" r="3" fill="${r.saldo<0?'var(--bad)':r.saldo<p.modalKerja*0.2?'var(--warn)':'var(--accent)'}"/>`).join('')}
+    <text x="${pad.l+4}" y="${mkY-4}" font-size="8" fill="var(--accent)">MK awal</text>
+    <text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="9" fill="var(--fg-muted)">Hari kerja</text>
+  `;
+}
+
+/* ====== RENDER MK SCENARIOS ====== */
+function renderMKScenarios(p){
+  const scenarios=[
+    {name:'Bayar tunai (100%/0hr)',pcts:[100,0,0,0,0],days:[0,0,0,0,0]},
+    {name:'2x/minggu (50/0 + 50/3)',pcts:[50,50,0,0,0],days:[0,3,0,0,0]},
+    {name:'Tiap 3 hari (100%/3hr)',pcts:[0,100,0,0,0],days:[0,3,0,0,0]},
+    {name:'Mingguan (100%/6hr)',pcts:[0,0,100,0,0],days:[0,0,6,0,0]},
+    {name:'50/0 + 50/14',pcts:[50,0,0,50,0],days:[0,0,0,14,0]},
+    {name:'2x/bulan (100%/13hr)',pcts:[0,0,0,100,0],days:[0,0,0,13,0]},
+  ];
+  let html='';
+  for(const sc of scenarios){
+    const conds=[];
+    for(let i=0;i<5;i++)if(sc.pcts[i]>0)conds.push({pct:sc.pcts[i],day:sc.days[i]});
+    const blended=conds.reduce((s,c)=>s+c.pct*c.day,0)/100;
+    const prof={conds,totalPct:100,blended};
+    const sim=simCash(p,prof,30);
+    const mk=calcMK(sim,p.modalKerja);
+    const statusTxt=mk.status==='good'?'Cukup':mk.status==='warn'?'Ketat':'Tidak cukup';
+    const cls=mk.status==='good'?'good-cell':mk.status==='warn'?'warn-cell':'bad-cell';
+    html+=`<tr><td>${sc.name}</td><td class="num">${blended.toFixed(1)}</td><td class="num">${rpS(mk.mkMin)}</td><td class="num">${rpS(mk.mkMinBuffer)}</td><td class="${cls}" style="font-weight:600">${statusTxt}</td></tr>`;
+  }
+  $('mk-scenarios').innerHTML=html;
+}
+
+/* ====== SENSITIVITY MATRIX 1: Spread x Volume ====== */
+function renderMatrix1(p){
+  const spreads=[400,500,600,750,900,1000,1200];
+  const vols=[2500,5000,7500,10000,15000,20000];
+  let hHtml='<tr><th>Spread \\ Volume</th>';
+  vols.forEach(v=>hHtml+=`<th class="num">${v/1000} t/hr</th>`);
+  hHtml+='</tr>';
+  $('mx1-head').innerHTML=hHtml;
+
+  let bHtml='';
+  for(const sp of spreads){
+    const isBase=sp===p.spread;
+    bHtml+='<tr><td style="font-weight:600'+(isBase?';color:var(--accent)':'')+'">'+sp+'</td>';
+    for(const v of vols){
+      const volBln=v*p.hariKerja;
+      const biayaVar=p.ongkosPerKg+p.biayaKemas+p.biayaLain;
+      const margin=sp-biayaVar;
+      const fixed=fixedForVol(v,p);
+      const sLoss=p.susut/100*p.hargaBeli*volBln;
+      const bLoss=p.badDebt/100*p.hargaJual*(1-p.susut/100)*volBln;
+      const laba=margin*volBln-fixed-sLoss-bLoss;
+      const ljt=laba/1e6;
+      const cls=ljt<-10?'hm-bad':ljt<0?'hm-bad':ljt<10?'hm-warn':ljt<50?'hm-good':'hm-great';
+      const base=(isBase&&v===p.volPerHari)?' hm-base':'';
+      bHtml+=`<td class="num hm-cell ${cls}${base}">${ljt.toFixed(1)}</td>`;
+    }
+    bHtml+='</tr>';
+  }
+  $('mx1-body').innerHTML=bHtml;
+}
+
+/* ====== SENSITIVITY MATRIX 2: Angkut x Susut ====== */
+function renderMatrix2(p){
+  const angkuts=[600000,800000,1000000,1200000,1500000,2000000];
+  const susuts=[0,1,2,3,5,7,10];
+  let hHtml='<tr><th>Angkut \\ Susut</th>';
+  susuts.forEach(s=>hHtml+=`<th class="num">${s}%</th>`);
+  hHtml+='</tr>';
+  $('mx2-head').innerHTML=hHtml;
+
+  let bHtml='';
+  for(const a of angkuts){
+    const isBase=a===p.ongkosTrip;
+    bHtml+='<tr><td style="font-weight:600'+(isBase?';color:var(--accent)':'')+'">'+rpS(a)+'/trip</td>';
+    for(const s of susuts){
+      const aPerKg=a/p.kapasitasTrip;
+      const biayaVar=aPerKg+p.biayaKemas+p.biayaLain;
+      const margin=p.spread-biayaVar;
+      const sLoss=s/100*p.hargaBeli*p.volPerBulan;
+      const bLoss=p.badDebt/100*p.hargaJual*(1-s/100)*p.volPerBulan;
+      const laba=margin*p.volPerBulan-p.fixedActual-sLoss-bLoss;
+      const ljt=laba/1e6;
+      const cls=ljt<-10?'hm-bad':ljt<0?'hm-bad':ljt<10?'hm-warn':ljt<50?'hm-good':'hm-great';
+      const base=(isBase&&s===p.susut)?' hm-base':'';
+      bHtml+=`<td class="num hm-cell ${cls}${base}">${ljt.toFixed(1)}</td>`;
+    }
+    bHtml+='</tr>';
+  }
+  $('mx2-body').innerHTML=bHtml;
+}
+
+/* ====== TORNADO CHART ====== */
+function drawTornado(p){
+  const svg=$('chart-tornado');
+  const baseLaba=p.labaPost;
+  const params=[
+    {name:'Harga Jual',id:'s-jual',lo:p.hargaJual*0.8,hi:p.hargaJual*1.2},
+    {name:'Harga Beli',id:'s-beli',lo:p.hargaBeli*1.2,hi:p.hargaBeli*0.8},
+    {name:'Ongkos Angkut',id:'s-angkut',lo:p.ongkosTrip*1.2,hi:p.ongkosTrip*0.8},
+    {name:'Volume (trip)',id:'s-trip',lo:Math.max(1,p.tripPerHari-1),hi:p.tripPerHari+1},
+    {name:'Susut',id:'s-susut',lo:Math.min(10,p.susut+2),hi:Math.max(0,p.susut-1)},
+    {name:'Biaya Tetap',id:null,lo:p.fixedBase*1.2,hi:p.fixedBase*0.8},
+  ];
+  const results=[];
+  for(const par of params){
+    const origVal=par.id?$(par.id).value:null;
+    let loLaba,hiLaba;
+    if(par.id){
+      $(par.id).value=par.lo;const pLo=getParams();loLaba=pLo.labaPost;
+      $(par.id).value=par.hi;const pHi=getParams();hiLaba=pHi.labaPost;
+      $(par.id).value=origVal;
+    }else{
+      const savedGaji=$('e-gaji').value,savedOps=$('e-ops').value,savedSewa=$('e-sewa').value,savedDepr=$('e-depr').value;
+      const factor1=par.lo/p.fixedBase;
+      $('e-gaji').value=Math.round(p.gajiSDM*factor1);$('e-ops').value=Math.round(p.operasional*factor1);$('e-sewa').value=Math.round(p.sewaMess*factor1);$('e-depr').value=Math.round(p.deprMotor*factor1);
+      loLaba=getParams().labaPost;
+      const factor2=par.hi/p.fixedBase;
+      $('e-gaji').value=Math.round(p.gajiSDM*factor2);$('e-ops').value=Math.round(p.operasional*factor2);$('e-sewa').value=Math.round(p.sewaMess*factor2);$('e-depr').value=Math.round(p.deprMotor*factor2);
+      hiLaba=getParams().labaPost;
+      $('e-gaji').value=savedGaji;$('e-ops').value=savedOps;$('e-sewa').value=savedSewa;$('e-depr').value=savedDepr;
+    }
+    results.push({name:par.name,lo:loLaba-baseLaba,hi:hiLaba-baseLaba,range:Math.abs(hiLaba-loLaba)});
+  }
+  results.sort((a,b)=>b.range-a.range);
+
+  const W=400,H=280,pad={t:10,r:20,b:20,l:100};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const maxAbs=Math.max(...results.map(r=>Math.max(Math.abs(r.lo),Math.abs(r.hi))),1);
+  const barH=Math.min(30,ph/results.length-4);
+  const xScale=v=>(pad.l+pw/2+v/maxAbs*pw/2);
+  const centerX=xScale(0);
+
+  let html=`<line x1="${centerX}" y1="${pad.t}" x2="${centerX}" y2="${H-pad.b}" stroke="var(--fg-muted)" stroke-width="1" stroke-dasharray="3,2"/>`;
+  results.forEach((r,i)=>{
+    const cy=pad.t+i*(barH+4)+barH/2;
+    const x1=xScale(Math.min(r.lo,r.hi));
+    const x2=xScale(Math.max(r.lo,r.hi));
+    html+=`<text x="${pad.l-4}" y="${cy+4}" text-anchor="end" font-size="9" fill="var(--fg-mid)">${r.name}</text>`;
+    html+=`<rect x="${Math.min(x1,centerX)}" y="${cy-barH/2}" width="${Math.abs(Math.min(x1,centerX)-centerX)}" height="${barH}" rx="2" fill="var(--bad)" opacity=".7"/>`;
+    html+=`<rect x="${centerX}" y="${cy-barH/2}" width="${Math.abs(x2-centerX)}" height="${barH}" rx="2" fill="var(--good)" opacity=".7"/>`;
+  });
+  html+=`<text x="${centerX}" y="${H-4}" text-anchor="middle" font-size="8" fill="var(--fg-muted)">Base: ${rpS(baseLaba)}/bln</text>`;
+  svg.innerHTML=html;
+}
+
+/* ====== BEP CHART ====== */
+function drawBEP(p){
+  const svg=$('chart-bep');
+  const W=400,H=280,pad={t:20,r:20,b:35,l:60};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const maxVol=15;
+  const vals=[];
+  for(let v=0;v<=maxVol;v+=0.5){
+    const volHari=v*1000;
+    const laba=labaForVol(volHari,p);
+    vals.push({v,laba});
+  }
+  const yMax=Math.max(...vals.map(d=>d.laba),0)*1.2;
+  const yMin=Math.min(...vals.map(d=>d.laba),0)*1.2;
+  const yRange=yMax-yMin||1;
+  const x=v=>(pad.l+v/maxVol*pw);
+  const y=l=>(pad.t+(yMax-l)/yRange*ph);
+
+  let path='M';
+  vals.forEach((d,i)=>{path+=(i?'L':'')+x(d.v).toFixed(1)+','+y(d.laba).toFixed(1)});
+  const zeroY=y(0);
+
+  let ticks='';
+  for(let v=0;v<=maxVol;v+=5){
+    ticks+=`<text x="${x(v)}" y="${H-pad.b+18}" text-anchor="middle" font-size="9" fill="var(--fg-muted)">${v}t</text>`;
+  }
+
+  svg.innerHTML=`
+    ${ticks}
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${zeroY}" y2="${zeroY}" stroke="var(--fg-muted)" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    ${isFinite(p.bepTonHari)&&p.bepTonHari<=maxVol?`<circle cx="${x(p.bepTonHari)}" cy="${zeroY}" r="5" fill="var(--warn)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="${x(p.bepTonHari)}" y="${zeroY-10}" text-anchor="middle" font-size="9" font-weight="600" fill="var(--warn)">BEP ${p.bepTonHari.toFixed(1)}t</text>`:''}
+    <circle cx="${x(p.volPerHari/1000)}" cy="${y(p.labaPost)}" r="4" fill="var(--accent)"/>
+    <text x="${x(p.volPerHari/1000)+6}" y="${y(p.labaPost)+4}" font-size="8" fill="var(--accent)">${rpS(p.labaPost)}</text>
+    <text x="${W/2}" y="${H-2}" text-anchor="middle" font-size="9" fill="var(--fg-muted)">Volume (ton/hari)</text>
+  `;
+}
+
+/* ====== SCALE CHART ====== */
+function drawScaleChart(p){
+  const svg=$('chart-scale');
+  const W=400,H=280,pad={t:20,r:50,b:35,l:60};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const vols=[2.5,5,7.5,10,15,20];
+  const data=vols.map(v=>{
+    const laba=labaForVol(v*1000,p);
+    const fixed=fixedForVol(v*1000,p);
+    const fPerKg=fixed/(v*1000*p.hariKerja);
+    const effM=p.marginKontribusi-(p.susut/100*p.hargaBeli)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
+    return{v,laba,marginKg:effM-fPerKg};
+  });
+  const maxLaba=Math.max(...data.map(d=>d.laba),1);
+  const minLaba=Math.min(...data.map(d=>d.laba),0);
+  const maxMargin=Math.max(...data.map(d=>d.marginKg),1);
+  const barW=pw/vols.length*0.6;
+  const x=i=>(pad.l+i*(pw/vols.length)+pw/vols.length/2);
+  const yL=l=>(pad.t+(maxLaba-l)/(maxLaba-minLaba||1)*ph);
+  const yM=m=>(pad.t+(maxMargin-m)/maxMargin*ph);
+  const zeroY=yL(0);
+
+  let html=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${zeroY}" y2="${zeroY}" stroke="var(--fg-muted)" stroke-width="1"/>`;
+  data.forEach((d,i)=>{
+    const cx=x(i);
+    const top=yL(Math.max(d.laba,0));
+    const bot=yL(Math.min(d.laba,0));
+    const h=Math.abs(top-bot);
+    html+=`<rect x="${cx-barW/2}" y="${Math.min(top,zeroY)}" width="${barW}" height="${Math.max(h,1)}" rx="2" fill="${d.laba>=0?'var(--accent)':'var(--bad)'}" opacity=".6"/>`;
+    html+=`<text x="${cx}" y="${H-pad.b+16}" text-anchor="middle" font-size="9" fill="var(--fg-muted)">${d.v}t</text>`;
+    html+=`<text x="${cx}" y="${(d.laba>=0?top-6:bot+12)}" text-anchor="middle" font-size="8" font-weight="600" fill="${d.laba>=0?'var(--accent)':'var(--bad)'}">${rpS(d.laba)}</text>`;
+  });
+  let mPath='M';
+  data.forEach((d,i)=>{mPath+=(i?'L':'')+x(i).toFixed(1)+','+yM(d.marginKg).toFixed(1)});
+  html+=`<path d="${mPath}" fill="none" stroke="var(--warn)" stroke-width="2" stroke-dasharray="4,2"/>`;
+  data.forEach((d,i)=>{html+=`<circle cx="${x(i)}" cy="${yM(d.marginKg)}" r="3" fill="var(--warn)"/>`});
+  html+=`<text x="${W-pad.r+4}" y="${yM(data[data.length-1].marginKg)+4}" font-size="8" fill="var(--warn)">Rp/kg</text>`;
+  svg.innerHTML=html;
+}
+
+/* ====== RENDER RAB ====== */
+function renderRAB(p){
+  const items=[p.capex,p.praOps,p.opex3bln,p.modalKerja];
+  const ids=['r-capex','r-praops','r-opex3','r-mk'];
+  const pids=['r-capex-p','r-praops-p','r-opex3-p','r-mk-p'];
+  items.forEach((v,i)=>{$(ids[i]).textContent=rpF(v);$(pids[i]).textContent=(v/p.totalRAB*100).toFixed(0)+'%'});
+  $('r-total').textContent=rpF(p.totalRAB);
+  $('r-laba').textContent=rpS(p.labaPost)+'/bln';
+  $('r-payback1').textContent=isFinite(p.paybackHangus)?p.paybackHangus.toFixed(1)+' bulan':'n/a';
+  $('r-payback2').textContent=isFinite(p.paybackTotal)?p.paybackTotal.toFixed(1)+' bulan':'n/a';
+  $('r-roi').textContent=isFinite(p.roiPilot)?(p.roiPilot*100).toFixed(1)+'%':'n/a';
+  $('r-stoploss').textContent=rpF(p.stoploss);
+  $('r-laba').className='num '+(p.labaPost>=0?'good-cell':'bad-cell');
+}
+
+/* ====== RENDER BIAYA TETAP TABLE ====== */
+function renderFixed(p){
+  $('c-gaji').textContent=rpF(p.gajiSDM);
+  $('c-ops').textContent=rpF(p.operasional);
+  $('c-sewa').textContent=rpF(p.sewaMess);
+  $('c-depr').textContent=rpF(p.deprMotor);
+  $('c-fixed').textContent=rpF(p.fixedBase);
+  const extra=Math.max(0,p.sdmNeeded-1)*p.biayaSkalaTambahan;
+  $('c-sdm-extra').textContent=extra>0?'+'+rpF(extra)+' ('+p.sdmNeeded+' SDM)':'-';
+  $('c-fixed-actual').textContent=rpF(p.fixedActual);
+}
+
+/* ====== SLIDER DISPLAY ====== */
+function syncSliders(){
+  $('v-beli').textContent=num($('s-beli').value);
+  $('v-jual').textContent=num($('s-jual').value);
+  $('v-trip').textContent=$('s-trip').value;
+  $('v-angkut').textContent=num($('s-angkut').value);
+  $('v-susut').textContent=$('s-susut').value+'%';
+  $('v-baddebt').textContent=$('s-baddebt').value+'%';
+  $('v-kapasitas').textContent=num($('s-kapasitas').value);
+  $('v-hari').textContent=$('s-hari').value;
+  $('v-kemas').textContent=num($('s-kemas').value);
+  $('v-lain').textContent=num($('s-lain').value);
+  $('v-rampup').textContent=$('s-rampup').value+'%';
+  $('v-mk').textContent=num($('s-mk').value);
+}
+
+/* ====== TOGGLE CASH TABLE ====== */
+function toggleCashTable(){
+  const w=$('cash-tbl-wrap');
+  const t=$('cash-toggle');
+  w.hidden=!w.hidden;
+  t.classList.toggle('open');
+}
+
+/* ====== MASTER UPDATE ====== */
+function update(){
+  syncSliders();
+  const p=getParams();
+  const profile=getPayProfile();
+  renderKPI(p);
+  renderUnit(p);
+  renderScale(p);
+  renderFixed(p);
+  renderPayFooter(profile);
+  const sim=simCash(p,profile,30);
+  const mk=calcMK(sim,p.modalKerja);
+  renderMK(p,sim,mk);
+  renderCashNarr(p,sim,mk);
+  renderCashTbl(sim);
+  drawCashChart(sim,p);
+  renderMKScenarios(p);
+  renderMatrix1(p);
+  renderMatrix2(p);
+  drawTornado(p);
+  drawBEP(p);
+  drawScaleChart(p);
+  renderRAB(p);
+}
+
+/* ====== EVENT LISTENERS ====== */
+const sliders=['s-beli','s-jual','s-trip','s-angkut','s-susut','s-baddebt','s-kapasitas','s-hari','s-kemas','s-lain','s-rampup','s-mk'];
+sliders.forEach(id=>{$(id).addEventListener('input',update)});
+const numbers=['e-gaji','e-ops','e-sewa','e-depr','e-skala','e-kapsdm','e-capex','e-praops','e-opex3','e-stoploss'];
+numbers.forEach(id=>{$(id).addEventListener('input',update)});
+for(let i=1;i<=5;i++){$('p-pct'+i).addEventListener('input',()=>{currentPreset='custom';document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));$('pre-custom').classList.add('active');update()});$('p-day'+i).addEventListener('input',update);}
+
+/* ====== INIT ====== */
+update();
+</script>
+</body>
+</html>
