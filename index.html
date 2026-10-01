@@ -703,7 +703,7 @@ function renderUnit(p){
     ['Harga jual ke pabrik',p.hargaJual,'Fluktuatif'],
     ['sub:Margin kontribusi',p.marginKontribusi,((p.marginKontribusi/p.hargaJual)*100).toFixed(1)+'% dari harga jual'],
     ['Biaya tetap per kg',p.fixedPerKg,rpF(p.fixedActual)+'/bln : '+num(p.volPerBulan)+' kg'],
-    ['Susut per kg',p.susutPerKg,p.susut+'% x '+rpF(p.hargaBeli)],
+    ['Susut per kg',p.susutPerKg,p.susut+'% x '+rpF(p.hargaJual)],
     ['Bad debt per kg',p.badDebtPerKg,p.badDebt+'% x '+rpF(p.hargaJual)],
     ['total:Laba bersih per kg',p.effectiveMarginPerKg-p.fixedPerKg,''],
   ];
@@ -732,7 +732,7 @@ function renderScale(p){
       const fixed=fixedForVol(v,p);
       const laba=labaForVol(v,p);
       const fPerKg=fixed/(v*p.hariKerja);
-      const effMargin=p.marginKontribusi-(p.susut/100*p.hargaBeli)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
+      const effMargin=p.marginKontribusi-(p.susut/100*p.hargaJual)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
       const marginBersih=effMargin-fPerKg;
       const kasKelHari=(p.hargaBeli*v)+(p.ongkosTrip*trips)+(p.biayaKemas*v)+(p.biayaLain*v)+(fixed/p.hariKerja);
       const mkMin=Math.round(kasKelHari*4);
@@ -929,7 +929,7 @@ function renderMatrix2(p){
       const aPerKg=a/p.kapasitasTrip;
       const biayaVar=aPerKg+p.biayaKemas+p.biayaLain;
       const margin=p.spread-biayaVar;
-      const sLoss=s/100*p.hargaBeli*p.volPerBulan;
+      const sLoss=s/100*p.hargaJual*p.volPerBulan;
       const bLoss=p.badDebt/100*p.hargaJual*(1-s/100)*p.volPerBulan;
       const laba=margin*p.volPerBulan-p.fixedActual-sLoss-bLoss;
       const ljt=laba/1e6;
@@ -1045,7 +1045,7 @@ function drawScaleChart(p){
     const laba=labaForVol(v*1000,p);
     const fixed=fixedForVol(v*1000,p);
     const fPerKg=fixed/(v*1000*p.hariKerja);
-    const effM=p.marginKontribusi-(p.susut/100*p.hargaBeli)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
+    const effM=p.marginKontribusi-(p.susut/100*p.hargaJual)-(p.badDebt/100*p.hargaJual*(1-p.susut/100));
     return{v,laba,marginKg:effM-fPerKg};
   });
   const maxLaba=Math.max(...data.map(d=>d.laba),1);
